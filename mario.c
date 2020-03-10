@@ -1,3 +1,5 @@
+// Program that prints out a pyramid from the Mario game of a height specified by the user
+
 #include <cs50.h>
 #include <stdio.h>
 
