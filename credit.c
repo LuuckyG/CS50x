@@ -18,9 +18,8 @@ int main(void)
     sum = checksum(number);
     card_length = checklen(number);
     
-    for (int i = 2; i < card_length; i++)
-        // Make cardnumber smaller, such that modulo 10 
-        // and modulo 100 give first and first two digits
+    // Make cardnumber smaller, such that modulo 10 and modulo 100 give first and first two digits
+    for (int i = 2; i < card_length; i++)       
     {
         number = number / 10;
     }
@@ -71,7 +70,8 @@ int checksum(long x)
 
             if (value >= 10)
             {
-                value -= 9; // Remove 10 to get second digit, add back 1 for first digit --> equal to -9
+                // Remove 10 to get second digit, add back 1 for first digit --> equal to -9
+                value -= 9; 
             }
 
             sum += value;
