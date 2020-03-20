@@ -1,5 +1,6 @@
 #include "helpers.h"
 #include <math.h>
+#include <stdlib.h>
 
 void swap(RGBTRIPLE *left, RGBTRIPLE *right);
 
@@ -37,7 +38,7 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
     for (int i = 0; i < height; i++)
     {
         // Only loop untill middle is reached
-        for (int j = 0; j < width/2; j++)
+        for (int j = 0; j < width / 2; j++)
         {
             // Swap left with right side of image
             swap(&image[i][j], &image[i][(width - 1) - j]);
@@ -49,82 +50,72 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
-    // Create image with blurred intensities
-    RGBTRIPLE blurred_image[height][width];
+    // Allocate memory for blurred image
+    float blurred_image[height][width][3];
 
-    float neighbors = 9.00;
+    // Neighbors
+    int n = 0;
 
-    int x_min;
-    int x_max;
-    int y_min;
-    int y_max;
+    // Initialize total RGB values of neighbors
+    float avg_values[3];
 
     for (int i = 0; i < height; i++)
     {
-        // Determine boundaries based on row
-        if (i == 0)
-        {
-            y_min = i;
-            neighbors -= 3.00;
-        }
-        else if (i == height - 1)
-        {
-            y_max = height;
-            neighbors -= 3.00;
-        }
-        else
-        {
-            y_min = i - 1;
-            y_max = i + 1;
-        }
-
         for (int j = 0; j < width; j++)
         {
-            // Determine boundaries based on column
-            if (j == 0)
-            {
-                x_min = j;
-                neighbors -= 3.00;
-            }
-            else if (j == width - 1)
-            {
-                x_max = width;
-                neighbors -= 3.00;
-            }
-            else
-            {
-                x_min = j - 1;
-                x_max = j + 1;
-            }
-
-            // Initialize total RGB values of neighbors
-            int total_blue = 0;
-            int total_green = 0;
-            int total_red = 0;
+            // Set RGB values
+            avg_values[0] = 0.0;
+            avg_values[1] = 0.0;
+            avg_values[2] = 0.0;
 
             // Calculate total of each color in neighboring pixels
-            for (int x = x_min; x < x_max; x++)
+            for (int x = i - 1; x <= i + 1; x++)
             {
-                for (int y = y_min; y < y_max; y++)
+                if (x < 0 || x >= height)
                 {
-                    total_blue += image[y][x].rgbtBlue;
-                    total_green += image[y][x].rgbtGreen;
-                    total_red += image[y][x].rgbtRed;
+                    continue;
+                }
+
+                for (int y = j - 1; y <= j + 1; y++)
+                {
+                    if (y < 0 || y >= width)
+                    {
+                        continue;
+                    }
+
+                    avg_values[0] += image[x][y].rgbtBlue;
+                    avg_values[1] += image[x][y].rgbtGreen;
+                    avg_values[2] += image[x][y].rgbtRed;
+                    n++;
                 }
             }
 
-            // Set values in blurred image to average value by dividing total by #neighbors
-            blurred_image[i][j].rgbtBlue = round(total_blue / neighbors);
-            blurred_image[i][j].rgbtGreen = round(total_green/ neighbors);
-            blurred_image[i][j].rgbtRed = round(total_red/ neighbors);
+            // Check if averages are not over the maximum of 255.0
+            for (int k = 0; k < 3; k++)
+            {
+                avg_values[k] = (avg_values[k] / (float) n > 255.0) ? 255.0 : round(avg_values[k] / (float) n);
+            }
+
+            // Set values in blurred image to average value
+            blurred_image[i][j][0] = avg_values[0];
+            blurred_image[i][j][1] = avg_values[1];
+            blurred_image[i][j][2] = avg_values[2];
 
             // Reset #neighbors
-            neighbors = 9.00;
+            n = 0;
         }
     }
 
     // Copy blurred image onto original image
-    image = blurred_image;
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            image[i][j].rgbtBlue = blurred_image[i][j][0];
+            image[i][j].rgbtGreen = blurred_image[i][j][1];
+            image[i][j].rgbtRed = blurred_image[i][j][2];
+        }
+    }
 
     return;
 }
