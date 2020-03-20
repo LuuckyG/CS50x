@@ -51,7 +51,7 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
     // Allocate memory for blurred image
-    float blurred_image[height][width][3];
+    float(*blurred_image)[width][3] = calloc(height, 3 * width * sizeof(float));
 
     // Neighbors
     int n = 0;
@@ -116,7 +116,9 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
             image[i][j].rgbtRed = blurred_image[i][j][2];
         }
     }
-
+    
+    free(blurred_image);
+    
     return;
 }
 
@@ -133,7 +135,7 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
     float squared[3];
 
     // Allocate memory for edge filtered image
-    float edge_image[height][width][3];
+    float(*edge_image)[width][3] = calloc(height, 3 * width * sizeof(float));
 
     // Initialize neighbors
     int n = 0;
@@ -209,6 +211,8 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
             image[i][j].rgbtRed = edge_image[i][j][2];
         }
     }
-
+    
+    free(edge_image);
+    
     return;
 }
