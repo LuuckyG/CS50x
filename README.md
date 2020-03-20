@@ -10,7 +10,7 @@ In many weeks you had the choice between a more (harder) and less (easier) comfo
 - [Problem Set 0: Scratch](/pset0)
 - [Problem Set 1: C](/pset1)
   * [credit](/pset1/credit)
-  * [mario (more)] (/pset1/mario)
+  * [mario (more)](/pset1/mario)
 - [Problem Set 2: Arrays](/pset2)
   * [readability](/pset2/readability)
   * [subsitution](/pset2/subsitution)
