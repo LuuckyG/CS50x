@@ -21,6 +21,7 @@ In many weeks you had the choice between a more (harder) and less (easier) comfo
   * [filter (more comfortable)](/pset4/filter)
   * [recover](/pset4/recover)
 - [Problem Set 5: Data Structures](/pset5)
+  * [speller](/pset5)
 - [Problem Set 6: Python](/pset6)
 - [Problem Set 7: SQL](/pset7)
 - [Problem Set 8: Information](/pset8)
