@@ -13,7 +13,7 @@ typedef struct node
 node;
 
 // Number of buckets in hash table
-const unsigned int N = 1;
+const unsigned int N = 26;
 
 // Hash table
 node *table[N];
@@ -35,7 +35,32 @@ unsigned int hash(const char *word)
 // Loads dictionary into memory, returning true if successful else false
 bool load(const char *dictionary)
 {
-    // TODO
+    // Open dictionary
+    FILE *inptr = fopen(dictionary, "r");
+    if (inptr == NULL)
+    {
+        printf("Could not open %s.\n", fname);
+        return 1;
+    }
+
+    // Scan each word in the dictionary
+    while (fscanf(inptr, %s, word) != EOF)
+    {
+        // Create node
+        node *n = malloc(sizeof(node));
+        if (n != NULL)
+        {
+            strcpy(n, word);
+        }
+
+        // Hash input
+
+
+        // Insert into linked list
+
+    }
+
+
     return false;
 }
 
