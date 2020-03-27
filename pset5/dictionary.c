@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <stdio.h>
 
 #include "dictionary.h"
@@ -17,15 +18,47 @@ typedef struct node
 node;
 
 // Number of buckets in hash table
-const unsigned int N = 123456;
+const unsigned int N = 26;
 
 // Hash table
 node *table[N];
 
+// Words in dictionary
+int word_count = 0;
+
 // Returns true if word is in dictionary else false
 bool check(const char *word)
 {
-    // TODO
+    // Get hashkey of word
+    unsigned int key = hash(word);
+
+    if (strcasecmp(table[key]->word, word))
+    {
+        return true;
+    }
+    else if (table[key]->next == NULL)
+    {
+        // No other words have this key and word is incorrectly spelled
+        return false;
+    }
+    else
+    {
+        // If more words have the same key, check the corresponding linked list
+        node *tmp = table[key];
+        while (tmp->next != NULL)
+        {
+            tmp = tmp->next;
+
+            if (strcasecmp(tmp->word, word))
+            {
+                free(tmp);
+                return true;
+            }
+        }
+
+        free(tmp);
+    }
+
     return false;
 }
 
@@ -39,25 +72,28 @@ bool check(const char *word)
  */
 unsigned int hash(const char *word)
 {
-    long total = 0;
-    int n = strlen(word);
-
-    // Horner's rule, using polynomial of 11 and ASCII values
-    for (int i = 0; i < n; i++)
-    {
-        total += 11 * total + (int) word[i];
-    }
-
-    // Get modulo of total, based on number of buckets in hash table
-    total = total % N;
-
-    if (total < 0)
-    {
-        total += N;
-    }
-
-    return (int) total;
+    return (int) tolower(word[0]) - (int) 'a';
 }
+
+//     long total = 0;
+//     int n = strlen(word);
+
+//     // Horner's rule, using polynomial of 11 and ASCII values
+//     for (int i = 0; i < n; i++)
+//     {
+//         total += 11 * total + (int) word[i];
+//     }
+
+//     // Get modulo of total, based on number of buckets in hash table
+//     total = total % N;
+
+//     if (total < 0)
+//     {
+//         total += N;
+//     }
+
+//     return (int) total;
+// }
 
 // Loads dictionary into memory, returning true if successful else false
 bool load(const char *dictionary)
@@ -74,13 +110,15 @@ bool load(const char *dictionary)
     if (file == NULL)
     {
         unload();
+        fclose(file);
         printf("Could not open %s.\n", dictionary);
         return false;
     }
 
-    // Scan each word in the dictionary
-    char *word = NULL;
+    // Initialize word variable
+    char word[LENGTH + 1];
 
+    // Scan each word in the dictionary
     while (fscanf(file, "%s", word) != EOF)
     {
         // Create node
@@ -101,14 +139,24 @@ bool load(const char *dictionary)
         unsigned int key = hash(word);
 
         // Insert into the hashtable
-        new_node->next = table[key];
-        table[key] = new_node;
+        if (table[key] == NULL)
+        {
+            table[key] = new_node;
+        }
+        else
+        {
+            new_node->next = table[key];
+            table[key] = new_node;
+        }
+
+        memset(word, 0, sizeof word);
         free(new_node);
+        word_count++;
     }
 
     // Close dictionary
     fclose(file);
-    free(word);
+    // free(word);
 
     return true;
 }
@@ -116,8 +164,7 @@ bool load(const char *dictionary)
 // Returns number of words in dictionary if loaded else 0 if not yet loaded
 unsigned int size(void)
 {
-    // TODO
-    return 0;
+    return word_count;
 }
 
 // Unloads dictionary from memory, returning true if successful else false
@@ -139,7 +186,7 @@ bool unload(void)
     }
 
     // Check if final element is correctly removed
-    if (table[N-1] == NULL)
+    if (table[N - 1] == NULL)
     {
         return true;
     }
