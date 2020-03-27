@@ -1,6 +1,10 @@
 // Implements a dictionary's functionality
 
+#include <ctype.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 #include "dictionary.h"
 
@@ -13,7 +17,7 @@ typedef struct node
 node;
 
 // Number of buckets in hash table
-const unsigned int N = 26;
+const unsigned int N = 123456;
 
 // Hash table
 node *table[N];
@@ -26,42 +30,87 @@ bool check(const char *word)
 }
 
 // Hashes word to a number
+/**
+ * Horner's rule for generating a polynomial of 11 using ASCII
+ * values of characters as hash function
+ *
+ * Adapted from:
+ * https://www.geeksforgeeks.org/hash-function-for-string-data-in-c-sharp/?ref=rp.
+ */
 unsigned int hash(const char *word)
 {
-    // TODO
-    return 0;
+    long total = 0;
+    int n = strlen(word);
+
+    // Horner's rule, using polynomial of 11 and ASCII values
+    for (int i = 0; i < n; i++)
+    {
+        total += 11 * total + (int) word[i];
+    }
+
+    // Get modulo of total, based on number of buckets in hash table
+    total = total % N;
+
+    if (total < 0)
+    {
+        total += N;
+    }
+
+    return (int) total;
 }
 
 // Loads dictionary into memory, returning true if successful else false
 bool load(const char *dictionary)
 {
-    // Open dictionary
-    FILE *inptr = fopen(dictionary, "r");
-    if (inptr == NULL)
+
+    // Create hashtable with nodes, initialize as NULL
+    for (int i = 0; i < N; i++)
     {
-        printf("Could not open %s.\n", fname);
-        return 1;
+        table[i] = NULL;
+    }
+
+    // Open dictionary
+    FILE *file = fopen(dictionary, "r");
+    if (file == NULL)
+    {
+        unload();
+        printf("Could not open %s.\n", dictionary);
+        return false;
     }
 
     // Scan each word in the dictionary
-    while (fscanf(inptr, %s, word) != EOF)
+    char *word = NULL;
+
+    while (fscanf(file, "%s", word) != EOF)
     {
         // Create node
-        node *n = malloc(sizeof(node));
-        if (n != NULL)
+        node *new_node = malloc(sizeof(node));
+
+        if (new_node == NULL)
         {
-            strcpy(n, word);
+            unload();
+            free(new_node);
+            fclose(file);
+            return false;
         }
 
+        strcpy(new_node->word, word);
+        new_node->next = NULL;
+
         // Hash input
+        unsigned int key = hash(word);
 
-
-        // Insert into linked list
-
+        // Insert into the hashtable
+        new_node->next = table[key];
+        table[key] = new_node;
+        free(new_node);
     }
 
+    // Close dictionary
+    fclose(file);
+    free(word);
 
-    return false;
+    return true;
 }
 
 // Returns number of words in dictionary if loaded else 0 if not yet loaded
@@ -74,6 +123,26 @@ unsigned int size(void)
 // Unloads dictionary from memory, returning true if successful else false
 bool unload(void)
 {
-    // TODO
+    // Free hashtable
+    for (int i = 0; i < N; i++)
+    {
+        node *tmp = table[i]->next;
+
+        // Destroy every linked list in hash bucket
+        while (table[i] != NULL)
+        {
+            free(table[i]);
+            table[i] = tmp;
+        }
+
+        free(tmp);
+    }
+
+    // Check if final element is correctly removed
+    if (table[N-1] == NULL)
+    {
+        return true;
+    }
+
     return false;
 }
