@@ -1,7 +1,6 @@
 // Implements a dictionary's functionality
 
 #include <ctype.h>
-#include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,33 +32,22 @@ bool check(const char *word)
     // Get hashkey of word
     unsigned int key = hash(word);
 
-    if (strcasecmp(table[key]->word, word) == 0)
-    {
-        return true;
-    }
-    else if (table[key]->next == NULL)
-    {
-        // No other words have this key and word is incorrectly spelled
-        return false;
-    }
-    else
-    {
-        node *trav = malloc(sizeof(node));
-        trav = table[key];
+    // Traverse linked lists at 'key' bucket of hashtable
+    node *trav = malloc(sizeof(node));
+    trav = table[key];
 
-        while(trav != NULL)
+    while(trav != NULL)
+    {
+        if (strcasecmp(trav->word, word) == 0)
         {
-            if (strcasecmp(trav->word, word) == 0)
-            {
-                free(trav);
-                return true;
-            }
-
-            trav = trav->next;
+            free(trav);
+            return true;
         }
 
-        free(trav);
+        trav = trav->next;
     }
+
+    free(trav);
 
     return false;
 }
