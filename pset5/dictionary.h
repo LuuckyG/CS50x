@@ -14,9 +14,6 @@
 // (e.g., pneumonoultramicroscopicsilicovolcanoconiosis)
 #define LENGTH 45
 
-// Number of buckets in hash table
-#define TABLE_SIZE 12345
-
 // Prototypes
 bool check(const char *word);
 
