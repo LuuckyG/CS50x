@@ -1,6 +1,7 @@
 // Implements a dictionary's functionality
 
 #include <ctype.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,7 +19,7 @@ typedef struct node
 node;
 
 // Number of buckets in hash table
-const unsigned int N = 26;
+const unsigned int N = 12345;
 
 // Hash table
 node *table[N];
@@ -32,7 +33,7 @@ bool check(const char *word)
     // Get hashkey of word
     unsigned int key = hash(word);
 
-    if (strcasecmp(table[key]->word, word))
+    if (strcasecmp(table[key]->word, word) == 0)
     {
         return true;
     }
@@ -43,24 +44,26 @@ bool check(const char *word)
     }
     else
     {
-        // If more words have the same key, check the corresponding linked list
-        node *tmp = table[key];
-        while (tmp->next != NULL)
-        {
-            tmp = tmp->next;
+        node *trav = malloc(sizeof(node));
+        trav = table[key];
 
-            if (strcasecmp(tmp->word, word))
+        while(trav != NULL)
+        {
+            if (strcasecmp(trav->word, word) == 0)
             {
-                free(tmp);
+                free(trav);
                 return true;
             }
+
+            trav = trav->next;
         }
 
-        free(tmp);
+        free(trav);
     }
 
     return false;
 }
+
 
 // Hashes word to a number
 /**
@@ -72,28 +75,34 @@ bool check(const char *word)
  */
 unsigned int hash(const char *word)
 {
-    return (int) tolower(word[0]) - (int) 'a';
-}
-
-//     long total = 0;
-//     int n = strlen(word);
-
-//     // Horner's rule, using polynomial of 11 and ASCII values
-//     for (int i = 0; i < n; i++)
-//     {
-//         total += 11 * total + (int) word[i];
-//     }
-
-//     // Get modulo of total, based on number of buckets in hash table
-//     total = total % N;
-
-//     if (total < 0)
-//     {
-//         total += N;
-//     }
-
-//     return (int) total;
+//     return (int) tolower(word[0]) - (int) 'a';
 // }
+
+    long total = 0;
+
+    // Horner's rule, using polynomial of 11 and ASCII values of lowercased letters
+    for (int i = 0, n = strlen(word); i < n; i++)
+    {
+        if (word[i] == '\'' )
+        {
+            total += 11 * total + (int) word[i];
+        }
+        else
+        {
+            total += 11 * total + (int) tolower(word[i]);
+        }
+    }
+
+    // Get modulo of total, based on number of buckets in hash table
+    total = total % N;
+
+    if (total < 0)
+    {
+        total += N;
+    }
+
+    return (int) total;
+}
 
 // Loads dictionary into memory, returning true if successful else false
 bool load(const char *dictionary)
@@ -150,13 +159,11 @@ bool load(const char *dictionary)
         }
 
         memset(word, 0, sizeof word);
-        free(new_node);
         word_count++;
     }
 
     // Close dictionary
     fclose(file);
-    // free(word);
 
     return true;
 }
@@ -173,23 +180,20 @@ bool unload(void)
     // Free hashtable
     for (int i = 0; i < N; i++)
     {
-        node *tmp = table[i]->next;
+        // Traverse linked lists in hashtable
+        node *trav = malloc(sizeof(node));
+        trav = table[i];
 
         // Destroy every linked list in hash bucket
-        while (table[i] != NULL)
+        while (trav != NULL)
         {
-            free(table[i]);
-            table[i] = tmp;
+            node *tmp = trav;
+            trav = trav->next;
+            free(tmp);
         }
 
-        free(tmp);
+        free(trav);
     }
 
-    // Check if final element is correctly removed
-    if (table[N - 1] == NULL)
-    {
-        return true;
-    }
-
-    return false;
+    return true;
 }
