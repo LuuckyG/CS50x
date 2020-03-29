@@ -22,31 +22,19 @@ int word_count = 0;
 // Global boolean for tracking load/unload dictionary operations
 bool loaded = false;
 
+
 // Returns true if word is in dictionary else false
 bool check(const char *word)
 {
-    // Get copy of word, in order to perform read options on the word
-    int n = strlen(word);
-    char word_copy[n + 1];
-
-    // Create lower case value of word
-    for (int i = 0; i < n; i++)
-    {
-        word_copy[i] = tolower(word[i]);
-    }
-
-    // Last char of word copy is terminating character
-    word_copy[n] =  '\0';
-
     // Get hashkey of word
-    unsigned int key = hash(word_copy);
+    unsigned int key = hash(word);
 
     // Traverse linked lists at 'key' bucket of hashtable
     node *trav = table[key];
 
-    while(trav != NULL)
+    while (trav != NULL)
     {
-        if (strcasecmp(trav->word, word_copy) == 0)
+        if (strcasecmp(trav->word, word) == 0)
         {
             return true;
         }
@@ -79,6 +67,7 @@ unsigned int hash(const char *word)
     // Return modulo of total, based on number of buckets in hash table
     return (int) total % TABLE_SIZE;
 }
+
 
 // Loads dictionary into memory, returning true if successful else false
 bool load(const char *dictionary)
@@ -140,6 +129,7 @@ bool load(const char *dictionary)
     return true;
 }
 
+
 // Returns number of words in dictionary if loaded else 0 if not yet loaded
 unsigned int size(void)
 {
@@ -150,6 +140,7 @@ unsigned int size(void)
 
     return 0;
 }
+
 
 // Unloads dictionary from memory, returning true if successful else false
 bool unload(void)
