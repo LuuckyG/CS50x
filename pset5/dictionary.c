@@ -1,12 +1,5 @@
 // Implements a dictionary's functionality
 
-#include <ctype.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <strings.h>
-#include <stdio.h>
-
 #include "dictionary.h"
 
 // Represents a node in a hash table
@@ -17,37 +10,46 @@ typedef struct node
 }
 node;
 
-// Number of buckets in hash table
-const unsigned int N = 12345;
-
 // Hash table
-node *table[N];
+node *table[TABLE_SIZE];
 
 // Words in dictionary
-int word_count = 0;
+int WORD_COUNT = 0;
+
+// Global boolean for tracking load/unload dictionary operations
+bool LOADED = false;
 
 // Returns true if word is in dictionary else false
 bool check(const char *word)
 {
+    // Get copy of word, in order to perform read options on the word
+    int n = strlen(word);
+    char word_copy[n + 1];
+
+    // Create lower case value of word
+    for (int i = 0; i < n; i++)
+    {
+        word_copy[i] = tolower(word[i]);
+    }
+
+    // Last char of word copy is terminating character
+    word_copy[n] =  '\0';
+
     // Get hashkey of word
-    unsigned int key = hash(word);
+    unsigned int key = hash(word_copy);
 
     // Traverse linked lists at 'key' bucket of hashtable
-    node *trav = malloc(sizeof(node));
-    trav = table[key];
+    node *trav = table[key];
 
     while(trav != NULL)
     {
-        if (strcasecmp(trav->word, word) == 0)
+        if (strcasecmp(trav->word, word_copy) == 0)
         {
-            free(trav);
             return true;
         }
 
         trav = trav->next;
     }
-
-    free(trav);
 
     return false;
 }
@@ -63,45 +65,21 @@ bool check(const char *word)
  */
 unsigned int hash(const char *word)
 {
-//     return (int) tolower(word[0]) - (int) 'a';
-// }
-
     long total = 0;
 
     // Horner's rule, using polynomial of 11 and ASCII values of lowercased letters
     for (int i = 0, n = strlen(word); i < n; i++)
     {
-        if (word[i] == '\'' )
-        {
-            total += 11 * total + (int) word[i];
-        }
-        else
-        {
-            total += 11 * total + (int) tolower(word[i]);
-        }
+        total += 11 * total + (int) tolower(word[i]);
     }
 
-    // Get modulo of total, based on number of buckets in hash table
-    total = total % N;
-
-    if (total < 0)
-    {
-        total += N;
-    }
-
-    return (int) total;
+    // Return modulo of total, based on number of buckets in hash table
+    return (int) total % TABLE_SIZE;
 }
 
 // Loads dictionary into memory, returning true if successful else false
 bool load(const char *dictionary)
 {
-
-    // Create hashtable with nodes, initialize as NULL
-    for (int i = 0; i < N; i++)
-    {
-        table[i] = NULL;
-    }
-
     // Open dictionary
     FILE *file = fopen(dictionary, "r");
     if (file == NULL)
@@ -146,31 +124,38 @@ bool load(const char *dictionary)
             table[key] = new_node;
         }
 
+        // Reset word
         memset(word, 0, sizeof word);
-        word_count++;
+
+        WORD_COUNT++;
     }
 
     // Close dictionary
     fclose(file);
 
+    LOADED = true;
     return true;
 }
 
 // Returns number of words in dictionary if loaded else 0 if not yet loaded
 unsigned int size(void)
 {
-    return word_count;
+    if (LOADED)
+    {
+        return WORD_COUNT;
+    }
+
+    return 0;
 }
 
 // Unloads dictionary from memory, returning true if successful else false
 bool unload(void)
 {
     // Free hashtable
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < TABLE_SIZE; i++)
     {
         // Traverse linked lists in hashtable
-        node *trav = malloc(sizeof(node));
-        trav = table[i];
+        node *trav = table[i];
 
         // Destroy every linked list in hash bucket
         while (trav != NULL)
@@ -183,5 +168,6 @@ bool unload(void)
         free(trav);
     }
 
+    LOADED = false;
     return true;
 }
