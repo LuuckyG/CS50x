@@ -158,8 +158,6 @@ bool unload(void)
             trav = trav->next;
             free(tmp);
         }
-
-        free(trav);
     }
 
     loaded = false;
