@@ -14,10 +14,10 @@ node;
 node *table[TABLE_SIZE];
 
 // Words in dictionary
-int WORD_COUNT = 0;
+int word_count = 0;
 
 // Global boolean for tracking load/unload dictionary operations
-bool LOADED = false;
+bool loaded = false;
 
 // Returns true if word is in dictionary else false
 bool check(const char *word)
@@ -127,22 +127,22 @@ bool load(const char *dictionary)
         // Reset word
         memset(word, 0, sizeof word);
 
-        WORD_COUNT++;
+        word_count++;
     }
 
     // Close dictionary
     fclose(file);
 
-    LOADED = true;
+    loaded = true;
     return true;
 }
 
 // Returns number of words in dictionary if loaded else 0 if not yet loaded
 unsigned int size(void)
 {
-    if (LOADED)
+    if (loaded)
     {
-        return WORD_COUNT;
+        return word_count;
     }
 
     return 0;
@@ -168,6 +168,6 @@ bool unload(void)
         free(trav);
     }
 
-    LOADED = false;
+    loaded = false;
     return true;
 }
