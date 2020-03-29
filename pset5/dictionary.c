@@ -73,7 +73,7 @@ unsigned int hash(const char *word)
     // Horner's rule, using polynomial of 11 and ASCII values of lowercased letters
     for (int i = 0, n = strlen(word); i < n; i++)
     {
-        total += 11 * total + (int) tolower(word[i]);
+        total += 11 * total + tolower(word[i]);
     }
 
     // Return modulo of total, based on number of buckets in hash table
