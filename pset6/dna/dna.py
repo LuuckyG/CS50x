@@ -77,4 +77,5 @@ def find_repeats(substring, string):
     return longest_repeat
 
 
-print(main())
+if __name__ == '__main__':
+    print(main())
