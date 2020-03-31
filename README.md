@@ -23,6 +23,12 @@ In many weeks you had the choice between a more (harder) and less (easier) comfo
 - [Problem Set 5: Data Structures](/pset5)
   * [speller](/pset5)
 - [Problem Set 6: Python](/pset6)
+  * [Mario (less)](/pset6/mario/less)
+  * [Mario (more)](/pset6/mario/more)
+  * [Cash (less)](/pset6)
+  * [Credit (more)](/pset6)
+  * [Readability](/pset6)
+  * [DNA](/pset6/dna)
 - [Problem Set 7: SQL](/pset7)
 - [Problem Set 8: Information](/pset8)
 
