@@ -15,7 +15,7 @@ def main():
 
     # Load DNA sequence
     with open(sys.argv[2], "r") as file:
-        dna = file.readline()
+        dna = file.read()
 
     # Open database
     with open(sys.argv[1], newline='') as database:
