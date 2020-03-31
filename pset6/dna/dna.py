@@ -51,11 +51,7 @@ def find_repeats(substring, string):
 
     # Find all occurances of the substring (STR) in whole string (DNA)
     for term in re.finditer(substring, string):
-
-        # Set first repeat
-        if last_repeat is None:
-            last_repeat = term.end()
-
+        
         # Check if substring is directly after last substring
         if last_repeat == term.start():
             repeats += 1
