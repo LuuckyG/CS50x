@@ -5,7 +5,7 @@ import sys
 
 def main():
     """
-    Main function to find repeating STR sequences in full DNA sequence
+    Main function to find longest consecutive repeating STR sequences in full DNA sequence
     """
 
     # Check command-line input
@@ -48,7 +48,7 @@ def main():
 
 def find_repeats(substring, string):
     """
-    Function to find repeats of substring in main string.
+    Function to find longest consecutive repeats of substring in main string.
     """
 
     # Initialize
