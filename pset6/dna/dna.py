@@ -21,28 +21,21 @@ def main():
     with open(sys.argv[1], newline='') as database:
 
         # Initialize
-        reader = csv.reader(database)
-        line_count = 0
         STR_count = []
+        reader = csv.reader(database)
+        header = next(reader)
+        
+        if header != None:
+            # Check DNA on STR sequences
+            for dna_segment in header[1:]:
+                repeats = find_repeats(dna_segment, dna)
+                STR_count.append(str(repeats))       
 
-        # Check if found repeats match with someone in database
-        for row in reader:
-
-            # Header of csv file
-            if line_count == 0:
-                # Check DNA on STR sequences
-                for dna_segment in row[1:]:
-                    repeats = find_repeats(dna_segment, dna)
-                    STR_count.append(str(repeats))
-
-            # Rest of csv
-            else:
+            # Check if found repeats match with someone in database
+            for row in reader:
                 if row[1:] == STR_count:
                     return row[0]
-
-            # Update
-            line_count += 1
-
+                
     return "No match"
 
 
