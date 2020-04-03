@@ -30,6 +30,8 @@ In many weeks you had the choice between a more (harder) and less (easier) comfo
   * [Readability](/pset6)
   * [DNA](/pset6/dna)
 - [Problem Set 7: SQL](/pset7)
+  * [Movies](/pset7/movies)
+  * [Houses](/pset7/houses)
 - [Problem Set 8: Information](/pset8)
 
 
