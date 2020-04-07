@@ -74,7 +74,7 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
                         String name = result.getString("name");
                         pokemon.add(new Pokemon(
                             name.substring(0, 1).toUpperCase() + name.substring(1),
-                            result.getString("url")
+                            result.getString("url"), false
                         ));
                     }
 

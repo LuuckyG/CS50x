@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -25,6 +27,7 @@ public class PokemonActivity extends AppCompatActivity {
     private TextView type2TextView;
     private String url;
     private RequestQueue requestQueue;
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class PokemonActivity extends AppCompatActivity {
         numberTextView = findViewById(R.id.pokemon_number);
         type1TextView = findViewById(R.id.pokemon_type1);
         type2TextView = findViewById(R.id.pokemon_type2);
+        button = findViewById(R.id.pokemon_catch_button);
 
         load();
     }
@@ -45,14 +49,17 @@ public class PokemonActivity extends AppCompatActivity {
         type1TextView.setText("");
         type2TextView.setText("");
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,
+                null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    // Get info Pokemon
                     String name = response.getString("name");
                     nameTextView.setText((name.substring(0, 1).toUpperCase() + name.substring(1)));
                     numberTextView.setText(String.format("#%03d", response.getInt("id")));
 
+                    // Set types of Pokemon
                     JSONArray typeEntries = response.getJSONArray("types");
                     for (int i = 0; i < typeEntries.length(); i++) {
                         JSONObject typeEntry = typeEntries.getJSONObject(i);
@@ -81,7 +88,23 @@ public class PokemonActivity extends AppCompatActivity {
     }
 
     public void toggleCatch(View view) {
-        // gotta catch 'em all!
-        
+        // Still need to implement the updating of the pokemon.caught attribute!
+
+        if (button.getText() == "Catch") { button.setText("Release"); }
+        else { button.setText("Catch"); }
+
+//        Pokemon current = (Pokemon) button.getTag();
+//        Boolean caught = current.getCaught();
+
+//        // Pokemon is not yet caught and button is pressed
+//        if (!caught) {
+//            button.setText("Release");
+//            current.setCaught(true);
+//        }
+//        // Release Pokemon
+//        else {
+//            button.setText("Catch");
+//            current.setCaught(false);
+//        }
     }
 }
