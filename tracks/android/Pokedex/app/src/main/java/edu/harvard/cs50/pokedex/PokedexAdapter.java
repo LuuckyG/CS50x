@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexViewHolder> {
+public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexViewHolder> implements Filterable {
     public static class PokedexViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout containerView;
         public TextView textView;
@@ -52,6 +54,7 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
     }
 
     private List<Pokemon> pokemon = new ArrayList<>();
+    private List<Pokemon> filtered = new ArrayList<>();
     private RequestQueue requestQueue;
 
     PokedexAdapter(Context context) {
@@ -101,13 +104,46 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
 
     @Override
     public void onBindViewHolder(@NonNull PokedexViewHolder holder, int position) {
-        Pokemon current = pokemon.get(position);
+        Pokemon current = filtered.get(position);
         holder.textView.setText(current.getName());
         holder.containerView.setTag(current);
     }
 
     @Override
     public int getItemCount() {
-        return pokemon.size();
+        return filtered.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return new PokemonFilter();
+    }
+
+    private class PokemonFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Pokemon> filteredPokemon = new ArrayList<>();
+
+            // Searching for Pokemon
+            for (int i = 0; i < pokemon.size(); i++) {
+                if (pokemon.get(i).getName().contains(constraint)) {
+                    filteredPokemon.add(pokemon.get(i));
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredPokemon;
+            results.count = filteredPokemon.size();
+
+            filtered = filteredPokemon;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            filtered = (List<Pokemon>) results.values;
+            notifyDataSetChanged();
+        }
+    }
+
 }

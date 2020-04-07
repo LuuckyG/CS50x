@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -48,7 +49,8 @@ public class PokemonActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    nameTextView.setText(response.getString("name"));
+                    String name = response.getString("name");
+                    nameTextView.setText((name.substring(0, 1).toUpperCase() + name.substring(1)));
                     numberTextView.setText(String.format("#%03d", response.getInt("id")));
 
                     JSONArray typeEntries = response.getJSONArray("types");
@@ -76,5 +78,10 @@ public class PokemonActivity extends AppCompatActivity {
         });
 
         requestQueue.add(request);
+    }
+
+    public void toggleCatch(View view) {
+        // gotta catch 'em all!
+        
     }
 }
