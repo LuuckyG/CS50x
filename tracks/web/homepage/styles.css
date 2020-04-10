@@ -1,48 +1,228 @@
-/*#nav {*/
-/*    background-color: lightgrey;*/
-/*    color: red;*/
-/*    font: Sans-serif;*/
-/*}*/
-
-/*#nav ul {*/
-/*    list-style-type: none;*/
-/*}*/
-
-/*#nav li {*/
-/*    float: left;*/
-/*    display: inline;*/
-/*}*/
-
-/*#nav a {*/
-/*    display: block;*/
-/*    color: white;*/
-/*    text-align: center;*/
-/*    padding: 14px 16px;*/
-/*    text-decoration: none;*/
-/*}*/
-
-/*#nav a:hover {*/
-/*  background-color: #111;*/
-/*}*/
-
-
-header {
-    border: solid black 1px;
-}
-
-nav {
-    border: solid black 1px;
-}
-
+/*Sizes*/
 section {
-    border: solid black 1px;
+    display: inline-block;
+    margin: 0 1.5%;
+    width: 30%;
 }
 
-article {
-    border: solid black 1px;
+
+/*Font styles for header and paragraphs*/
+body {
+    color: #333;
+    width: 80%;
+    float: none;
+    margin: auto;
+    padding: 10px;
 }
 
+.content {
+    border: 1px solid #333;
+    margin: auto;
+    padding: 25px 50px 25px 50px ;
+}
+
+
+h1 {
+    color: #333;
+    font-size: 55px;
+    font-weight: bold;
+}
+
+
+h2 {
+    font-weight: bold;
+    font-size: 32px;
+}
+
+
+h5 {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+
+p, ul, ol, li {
+    font-size: 14px;
+}
+
+
+.tip {
+    font-style: italic;
+}
+
+#fname, #question {
+    font-size: 18px;
+}
+
+
+/*Blog Page style*/
+.blog-list {
+    margin: auto;
+}
+
+.blog {
+    display: block;
+    margin: auto;
+    padding-top: 10px;
+}
+
+.blog-title {
+    background-color: #333;
+    color: gold;
+    padding: 10px;
+    width: 100%;
+}
+
+.blog-date {
+    float: right;
+    font-style: italic;
+    padding-right: 10px;
+}
+
+.blog-nav {
+    padding-top: 30px;
+    display: block;
+    width: 25%;
+    float: left;
+}
+
+.blog-nav li {
+    list-style-type: none;
+    margin-left: 0px;
+    padding: 4px;
+    float: left;
+}
+
+.blog-nav a {
+    color: #333;
+}
+
+.blog-nav a:hover {
+    color: gold;
+}
+
+.blog-content {
+    display: inline-block;
+    width: 75%;
+}
+
+.blog-end a {
+    color: gold;
+    font-weight: bold;
+}
+
+
+/*
+Navbar style
+*/
+nav {
+    display: block;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style-type: none;
+    margin-left: 0px;
+    padding: 0px;
+    overflow: hidden;
+    background-color: #333;
+}
+
+nav li {
+    float: left;
+}
+
+nav li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+nav li a:hover {
+    background-color: #111;
+    color: gold;
+}
+
+nav li .active {
+    background-color: gold;
+    color: black;
+}
+
+
+/*Question form*/
+input[type=text], select, textarea{
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+
+
+/*Photo styling*/
+
+.staff section {
+    width: 45%;
+    display: inline-block;
+    margin: auto;
+}
+
+#profile-photo {
+    display: block;
+    margin: auto;
+    width: 80%;
+    border-radius: 100px;
+    float: right;
+}
+
+.org-logo {
+    display: inline-block;
+    width: 75%;
+    margin: auto;
+}
+
+#ocr-example {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.ref {
+    text-align: center;
+}
+
+/*Footer*/
 footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
     border: solid black 1px;
 }
 
+footer a {
+    color: gold;
+}
+
+footer a:hover {
+    color: white;
+}
+
+.copyright {
+    font-size: 15px;
+}
