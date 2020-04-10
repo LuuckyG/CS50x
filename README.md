@@ -38,10 +38,9 @@ Tracks
 ----------
 In order to decide what kind of final project I wanted to do, I did all tracks, including: Android app, web and game development.
 
-- [Tracks](/tracks)
- * [Android](/tracks/android)
- * [Game](/tracks/game)
- * [Web](/tracks/web)
+- [Android](/tracks/android)
+- [Game](/tracks/game)
+- [Web](/tracks/web)
    * [Homepage](/tracks/web/homepage)
    * [Finance](/tracks/web/finance)
 
