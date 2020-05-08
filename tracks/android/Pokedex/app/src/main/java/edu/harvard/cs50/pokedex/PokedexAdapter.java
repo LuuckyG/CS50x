@@ -26,7 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexViewHolder> implements Filterable {
@@ -126,7 +125,7 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
 
             // Searching for Pokemon
             for (int i = 0; i < pokemon.size(); i++) {
-                if (pokemon.get(i).getName().contains(constraint)) {
+                if (pokemon.get(i).getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
                     filteredPokemon.add(pokemon.get(i));
                 }
             }

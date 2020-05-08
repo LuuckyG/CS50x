@@ -43,6 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/pokemon_catch_button"
+        android:textAlignment="center"
         android:text="Catch"
         android:textSize="18dp"
         android:padding="10dp"

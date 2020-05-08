@@ -1,10 +1,6 @@
-/*Sizes*/
-section {
-  display: inline-block;
-  margin: 0 1.5%;
-  width: 30%;
+* {
+  box-sizing: border-box;
 }
-
 
 /*Font styles for header and paragraphs*/
 body {
@@ -13,14 +9,24 @@ body {
   float: none;
   margin: auto;
   padding: 10px;
+  align-content: center;
 }
 
 .content {
+  display: flex;
+  justify-content: space-evenly;
   border: 1px solid #333;
   margin: auto;
   padding: 25px 50px 25px 50px ;
 }
 
+/*Sizes*/
+section {
+  display: inline-block;
+  margin: 0 1.5%;
+  width: 30%;
+  align-content: center;
+}
 
 h1 {
   color: #333;
@@ -33,15 +39,12 @@ h2 {
   font-size: 32px;
 }
 
-
 h5 {
   font-weight: bold;
   font-size: 20px;
 }
 
-
-p, ul, ol, li { font-size: 14px;}
-
+p, ul, ol, li {font-size: 14px;}
 
 .tip {font-style: italic;}
 
@@ -49,14 +52,104 @@ p, ul, ol, li { font-size: 14px;}
   font-size: 18px;
 }
 
+/* Logo */
+.logo {
+  color:#333;
+  background-color: transparent;
+  border: none;
+}
+
+/* Navbar style */
+nav {
+  display: block;
+  font-weight: bold;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  align-content: center;
+}
+
+nav ul {
+  list-style-type: none;
+  margin-left: 0px;
+  padding: 0px;
+  overflow: hidden;
+  background-color: #333;
+  align-items: center;
+}
+
+nav li {float: left;}
+
+nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+nav li a:hover {
+  background-color: #111;
+  color: gold;
+}
+
+nav li .active {
+  background-color: gold;
+  color: black;
+}
 
 /*Blog Page style*/
-.blog-list {margin: auto;}
+article {
+  display: inline-block;
+  width: 100%;
+}
+
+.blog-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  flex: 10%;
+}
+
+.blog-list a {
+  margin-bottom: 10px;
+}
+
+.card {
+  margin-bottom: 10px;
+}
+
+.btn-link:hover {
+  text-decoration: gold underline;
+}
+
+.btn-blog {
+  background-color: #333;
+  border: gold;
+  color: gold;
+  font-weight: bold;
+}
+
+.btn-blog:hover {
+  background-color: gold;
+  color: #333;
+}
+
+.btn-blog-toggle {
+  float: right;
+  margin: 10px;
+}
 
 .blog {
   display: block;
   margin: auto;
   padding-top: 10px;
+}
+
+.blog-header {
+  z-index: 101;
+  background-color: #333;
 }
 
 .blog-title {
@@ -80,10 +173,10 @@ p, ul, ol, li { font-size: 14px;}
 }
 
 .blog-nav li {
+  display: block;
   list-style-type: none;
   margin-left: 0px;
   padding: 4px;
-  float: left;
 }
 
 .blog-nav a {color: #333;}
@@ -100,48 +193,12 @@ p, ul, ol, li { font-size: 14px;}
   font-weight: bold;
 }
 
-
-/*
-Navbar style
-*/
-nav {
-  display: block;
-  font-weight: bold;
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-}
-
-nav ul {
-  list-style-type: none;
-  margin-left: 0px;
-  padding: 0px;
-  overflow: hidden;
-  background-color: #333;
-}
-
-nav li {float: left;}
-
-nav li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-nav li a:hover {
-  background-color: #111;
-  color: gold;
-}
-
-nav li .active {
-  background-color: gold;
-  color: black;
-}
-
-
 /*Question form*/
+.question-form {
+  display: inline-block;
+  width: 100%;
+}
+
 input[type=text], select, textarea{
   width: 100%;
   padding: 12px;
@@ -156,22 +213,28 @@ label {
   display: inline-block;
 }
 
-@media screen and (max-width: 600px) {
-  .col-25, .col-75, input[type=submit] {
-    width: 100%;
-    margin-top: 0;
-  }
+/* About us page  */
+.mission {
+  text-align: center;
+  margin: 20px;
+  padding-top: 35px;
+  padding-bottom: 20px;
 }
 
+.staff {padding-top: 10px;}
+
+.staff-member {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  padding: 10px;
+}
+
+.staff-info {flex: 45%;}
+
+.staff-photo {padding: 20px;}
 
 /*Photo styling*/
-
-.staff section {
-  width: 45%;
-  display: inline-block;
-  margin: auto;
-}
-
 img {max-width: 100%;}
 
 #profile-photo {
@@ -179,13 +242,19 @@ img {max-width: 100%;}
   margin: auto;
   width: 80%;
   border-radius: 100px;
-  float: right;
+}
+
+.org-media-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
 }
 
 .org-logo {
   display: inline-block;
   width: 75%;
   margin: auto;
+  align-content: center;
 }
 
 #ocr-example {
@@ -210,3 +279,36 @@ footer a {color: gold;}
 footer a:hover {color: white;}
 
 .copyright {font-size: 15px;}
+
+@media screen and (max-width: 992px) {
+  .content, .card-body {
+    flex-direction: column;
+  }
+  
+  h1 {
+    font-size: 4vw;
+  }
+
+  .orgs {
+    width: 100%;
+  }
+
+  .org-logo {
+    width: 50%;
+  }
+}
+
+
+@media screen and (max-width: 600px) {
+  nav li, article {
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 4vw;
+  }
+
+  p, a {
+    font-size: 2.5vw;
+  }
+}
