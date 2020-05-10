@@ -28,28 +28,37 @@ section {
   align-content: center;
 }
 
-h1 {
+h1, .logo {
   color: #333;
-  font-size: 55px;
+  font-size: 1.75em;
   font-weight: bold;
 }
 
 h2 {
   font-weight: bold;
-  font-size: 32px;
+  font-size: 2em;
+}
+
+.blog-title {
+  font-size: 1.5em;
+}
+
+button > h2 {
+  font-weight: bold;
+  font-size: 2em;
 }
 
 h5 {
   font-weight: bold;
-  font-size: 20px;
+  font-size: 1.5em;
 }
 
-p, ul, ol, li {font-size: 14px;}
+p, ul, ol, li {font-size: 0.9em;}
 
 .tip {font-style: italic;}
 
 #fname, #question {
-  font-size: 18px;
+  font-size: 1em;
 }
 
 /* Logo */
@@ -100,15 +109,10 @@ nav li .active {
 }
 
 /*Blog Page style*/
-article {
-  display: inline-block;
-  width: 100%;
-}
-
 .blog-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;  
   flex: 10%;
 }
 
@@ -128,12 +132,16 @@ article {
   background-color: #333;
   border: gold;
   color: gold;
+  font-size: 0.85em;
   font-weight: bold;
+  transition: all 0.3s ease;
 }
 
 .btn-blog:hover {
+  cursor: pointer;
   background-color: gold;
   color: #333;
+  transform: scale(1.03);
 }
 
 .btn-blog-toggle {
@@ -142,13 +150,12 @@ article {
 }
 
 .blog {
-  display: block;
-  margin: auto;
-  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .blog-header {
-  z-index: 101;
+  z-index: 1;
   background-color: #333;
 }
 
@@ -159,17 +166,21 @@ article {
   width: 100%;
 }
 
+.blog-info {
+  display: flex;
+  flex-direction: row;
+}
+
 .blog-date {
-  float: right;
+  flex: 1;
+  order: 2;
   font-style: italic;
-  padding-right: 10px;
+  margin-right: 10px;
 }
 
 .blog-nav {
-  padding-top: 30px;
-  display: block;
-  width: 25%;
-  float: left;
+  flex: 2;
+  order: 1;
 }
 
 .blog-nav li {
@@ -184,8 +195,8 @@ article {
 .blog-nav a:hover {color: gold;}
 
 .blog-content {
-  display: inline-block;
-  width: 75%;
+  flex: 5;
+  margin-right: 10px;
 }
 
 .blog-end a {
@@ -211,6 +222,10 @@ input[type=text], select, textarea{
 label {
   padding: 12px 12px 12px 0;
   display: inline-block;
+}
+
+.btn-form:hover {
+  cursor: pointer;
 }
 
 /* About us page  */
@@ -278,15 +293,27 @@ footer a {color: gold;}
 
 footer a:hover {color: white;}
 
-.copyright {font-size: 15px;}
+.copyright {font-size: 0.9em;}
 
 @media screen and (max-width: 992px) {
-  .content, .card-body {
+  .content, .card-body, .blog {
     flex-direction: column;
   }
-  
-  h1 {
-    font-size: 4vw;
+
+  .blog-list {
+    align-items: center;
+  }
+
+  .blog-info {
+    display: none;
+  }
+
+  .logo {
+    font-size: 30px;
+  }
+
+  .blog-title {
+    font-size: 1.5em;
   }
 
   .orgs {
@@ -295,20 +322,21 @@ footer a:hover {color: white;}
 
   .org-logo {
     width: 50%;
+    margin-bottom: 20px;
   }
 }
 
-
 @media screen and (max-width: 600px) {
-  nav li, article {
+  nav li {
     flex-direction: column;
+    width: 100%;
   }
 
-  h1 {
-    font-size: 4vw;
+  .logo {
+    font-size: 20px;
   }
 
-  p, a {
-    font-size: 2.5vw;
+  .blog-title {
+    font-size: 1.5em;
   }
 }
