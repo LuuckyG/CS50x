@@ -1,5 +1,7 @@
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 /*Font styles for header and paragraphs*/
@@ -8,7 +10,7 @@ body {
   width: 80%;
   float: none;
   margin: auto;
-  padding: 10px;
+  /* padding: 10px; */
   align-content: center;
 }
 
@@ -247,7 +249,10 @@ label {
 
 .staff-info {flex: 45%;}
 
-.staff-photo {padding: 20px;}
+.staff-photo {
+  padding: 20px;
+  animation: drop 1.5s ease;
+}
 
 /*Photo styling*/
 img {max-width: 100%;}
@@ -294,6 +299,19 @@ footer a {color: gold;}
 footer a:hover {color: white;}
 
 .copyright {font-size: 0.9em;}
+
+@keyframes drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-80px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
 
 @media screen and (max-width: 992px) {
   .content, .card-body, .blog {
