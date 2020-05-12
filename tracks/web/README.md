@@ -1,7 +1,7 @@
-#Web applications
+Web applications
 -----------------------
 
-## Homepage
+### Homepage
 The homepage project is a website about obstacle racing, a hobby of mine, and consists of some pages, including:
 - Homepage
 - Page about big organisations in this sport
