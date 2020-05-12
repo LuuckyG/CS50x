@@ -1,5 +1,6 @@
 from webapp import app
 from webapp.models import User
+from webapp.forms import RegisterForm, LoginForm
 from webapp.helpers import apology, login_required, lookup, usd
 
 from flask import redirect, render_template, url_for, request, flash, session, jsonify
@@ -92,6 +93,7 @@ def quote():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
+    form = RegisterForm()
     return apology("TODO")
 
 
