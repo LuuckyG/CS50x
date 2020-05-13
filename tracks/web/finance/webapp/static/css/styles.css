@@ -40,6 +40,18 @@ main
     text-align: center;
 }
 
+.content-section {
+    padding: 10px 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
 main img
 {
     /* constrain images on small screens */
