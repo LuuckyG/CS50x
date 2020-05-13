@@ -1,6 +1,6 @@
 from webapp import app
 from webapp.models import User
-from webapp.forms import RegisterForm, LoginForm
+from webapp.forms import LoginForm, RegistrationForm
 from webapp.helpers import apology, login_required, lookup, usd
 
 from flask import redirect, render_template, url_for, request, flash, session, jsonify
@@ -44,7 +44,8 @@ def login():
     session.clear()
 
     # User reached route via POST (as by submitting a form via POST)
-    if request.method == "POST":
+    form = LoginForm()
+    if form.validate_on_submit():
 
         # Ensure username was submitted
         if not request.form.get("username"):
@@ -65,11 +66,11 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # Redirect user to home page
-        return redirect("/")
+        return redirect(url_for("index"))
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("login.html")
+        return render_template("login.html", title='Login', form=form)
 
 
 @app.route("/logout")
@@ -93,8 +94,11 @@ def quote():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
-    form = RegisterForm()
-    return apology("TODO")
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('home'))
+    return render_template('register.html', title='Register', form=form)
 
 
 @app.route("/sell", methods=["GET", "POST"])
