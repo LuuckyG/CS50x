@@ -1,10 +1,10 @@
 from webapp import app, db, bcrypt
 from webapp.models import User
-from webapp.forms import LoginForm, RegistrationForm
-from webapp.helpers import apology, login_required, lookup, usd
+from webapp.forms import LoginForm, RegistrationForm, UpdateAccountForm
+from webapp.helpers import apology, lookup, usd
 
 from flask import redirect, render_template, url_for, request, flash, session, jsonify
-from flask_login import login_user
+from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -17,10 +17,11 @@ def after_request(response):
     return response
 
 @app.route("/")
+@app.route("/index")
 @login_required
 def index():
     """Show portfolio of stocks"""
-    return apology("TODO")
+    return render_template("index.html", title='Home')
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -40,25 +41,20 @@ def history():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
 
-    # Forget any user_id
-    session.clear()
-
-    # User reached route via POST (as by submitting a form via POST)
     form = LoginForm()
     if form.validate_on_submit():
-
         # Query database for username
         user = User.query.filter_by(username=form.username.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            return redirect(url_for("index"))
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for("index"))
         else:
             flash('Login Unsuccesful. Please check username and password', 'danger')
-
-    # User reached route via GET (as by clicking a link or via redirect)
-    else:
-        return render_template("login.html", title='Login', form=form)
+    return render_template("login.html", title='Login', form=form)
 
 
 @app.route("/logout")
@@ -67,10 +63,30 @@ def logout():
 
     # Forget any user_id
     session.clear()
+    logout_user()
 
     # Redirect user to login form
-    return redirect("/")
+    return redirect(url_for('index'))
 
+
+@app.route("/account", methods=['GET', 'POST'])
+@login_required
+def account():
+    """Show user account"""
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.amount += form.amount.data
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('account'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+        form.amount.data = f'{current_user.amount:.2f}'
+    image_file = url_for('static', filename=f'profile_pics/{current_user.image_file}')
+    return render_template('account.html', title='Account', image_file=image_file, form=form)
 
 @app.route("/quote", methods=["GET", "POST"])
 @login_required
@@ -82,10 +98,10 @@ def quote():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
-    # User reached route via POST (as by submitting a form via POST)
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-
         # Add user to database
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
@@ -95,10 +111,7 @@ def register():
         # Redirect user to home page
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for("index"))
-    
-    # User reached route via GET (as by clicking a link or via redirect)
-    else:
-        return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', title='Register', form=form)
 
 
 @app.route("/sell", methods=["GET", "POST"])

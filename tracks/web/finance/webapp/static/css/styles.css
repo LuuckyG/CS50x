@@ -31,6 +31,11 @@ main .form-control
     width: auto;
 }
 
+.col-md-8 {
+    /* center contents */
+    margin: auto;
+}
+
 main
 {
     /* scroll horizontally as needed */

@@ -13,6 +13,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+    image_file = db.Column(db.String(20), nullable=False, default='default.png')
     amount = db.Column(db.Float, default=10000.00)
     buys = db.relationship('BuyTransaction', backref='buyer', lazy=True)
     sells = db.relationship('SellTransaction', backref='seller', lazy=True)
