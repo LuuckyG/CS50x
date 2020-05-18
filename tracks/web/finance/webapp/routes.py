@@ -1,12 +1,22 @@
-from webapp import app, db, bcrypt
-from webapp.models import User
+from webapp import app, admin, db, bcrypt
+from webapp.models import User, BuyTransaction, SellTransaction
 from webapp.forms import LoginForm, RegistrationForm, UpdateAccountForm
 from webapp.helpers import apology, lookup, usd
 
+import os
+import secrets
+from PIL import Image
+from flask_admin.contrib.sqla import ModelView
 from flask import redirect, render_template, url_for, request, flash, session, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
+
+
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(BuyTransaction, db.session))
+admin.add_view(ModelView(SellTransaction, db.session))
+
 
 # Ensure responses aren't cached
 @app.after_request
@@ -69,12 +79,29 @@ def logout():
     return redirect(url_for('index'))
 
 
+def save_image(form_image):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_image.filename)
+    image_fn = random_hex + f_ext
+    image_path = os.path.join(app.root_path, 'static/profile_pics', image_fn)
+    
+    output_size = (125, 125)
+    i = Image.open(form_image)
+    i.thumbnail(output_size)
+    i.save(image_path)
+
+    return image_fn
+
+
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
     """Show user account"""
     form = UpdateAccountForm()
     if form.validate_on_submit():
+        if form.image.data:
+            image_file = save_image(form.image.data)
+            current_user.image_file = image_file
         current_user.username = form.username.data
         current_user.email = form.email.data
         current_user.amount += form.amount.data

@@ -14,20 +14,60 @@
         </div>
     </div>
     <div class="content-section">
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
                 <div class="form-group">
                     {{ form.username.label(class="form-control-label") }}
-                    {{ form.username(class="form-control form-control-lg") }}
+
+                    {% if form.username.errors %}
+                        {{ form.username(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.username(class="form-control form-control-lg") }}
+                    {% endif %}
                 </div>
                 <div class="form-group">
                     {{ form.email.label(class="form-control-label") }}
-                    {{ form.email(class="form-control form-control-lg") }}
+
+                    {% if form.email.errors %}
+                        {{ form.email(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.email(class="form-control form-control-lg") }}
+                    {% endif %}   
                 </div>
                 <div class="form-group">
                     {{ form.amount.label(class="form-control-label") }}
-                    {{ form.amount(class="form-control form-control-lg") }}
+
+                    {% if form.amount.errors %}
+                        {{ form.amount(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.amount.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.amount(class="form-control form-control-lg") }}
+                    {% endif %}   
+                </div>
+                <div class="form-group">
+                    {{ form.image.label() }}
+                    {{ form.image(class="form-control-file") }}
+
+                    {% if form.image.errors %}
+                        {% for error in form.image.errors %}
+                            <span class="text-danger">{{ error }}</span></br>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </fieldset>
             <div class="form-group">
