@@ -2,9 +2,46 @@
 
 {% block title %}
     {{ title }}
-{% endblock %}
+{% endblock title %}
 
 {% block main %}
-    <h1> Main Page </h1>
-    <h2>{{ current_user.username }}</h2>
-{% endblock main%}
+
+    <table class="table table-hover">
+        <caption>Portfolio of {{ user.username }}</caption>
+        <thead>
+            <tr>
+              <th scope="col">Symbol</th>
+              <th scope="col">Company Name</th>
+              <th scope="col">Shares</th>
+              <th scope="col">Price</th>
+              <th scope="col">TOTAL</th>
+            </tr>
+          </thead>
+        <tbody>    
+            {% for share in shares %}
+            <tr>
+                <th scope="row"> {{ share.symbol }} </th>
+                <td> {{ share.company_name }} </td>
+                <td> {{ share.shares_amount }} </td>
+                <td> ${{  '%0.2f'| format(share.price_per_share) }} </td>
+                <td> ${{  '%0.2f'| format(share.dollar_amount) }} </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <th scope="row">Cash</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td> ${{ '%0.2f'| format(user.cash) }} </td>
+            </tr>
+            <tr>
+                <th></th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b>${{ '%0.2f'| format(user.portfolio_value + user.cash) }}</b></td>
+            </tr>
+        </tbody>
+    </table>
+
+{% endblock main %}

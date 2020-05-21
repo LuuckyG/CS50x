@@ -2,7 +2,7 @@
 
 {% block title %}
     {{ title }}
-{% endblock %}
+{% endblock title %}
 
 {% block main %}
     <div class="media">
@@ -10,7 +10,7 @@
         <div class="media-body">
             <h2 class="account-heading">{{ current_user.username }}</h2>
             <p class="text-secondary"> {{ current_user.email }}</p>
-            <p class="text-secondary"> Your current balance: ${{ '%0.2f' % (current_user.cash + current_user.portfolio_value) }}</p>
+            <p class="text-secondary"> Your current portfolio value: ${{ '%0.2f' % (current_user.cash + current_user.portfolio_value) }}</p>
         </div>
     </div>
     <div class="content-section">
