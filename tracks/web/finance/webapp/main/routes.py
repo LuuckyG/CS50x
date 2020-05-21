@@ -1,11 +1,12 @@
 from webapp import admin, db, bcrypt
+from webapp.main.forms import SearchForm
 from webapp.main.helpers import apology, lookup, usd
 from webapp.users.models import User
-from webapp.transactions.models import PortFolio, Share, BuyTransaction, SellTransaction
+from webapp.transactions.models import BuyTransaction, SellTransaction
 
 from flask_admin.contrib.sqla import ModelView
-from flask import Blueprint, render_template
-from flask_login import login_required
+from flask import Blueprint, render_template, redirect, url_for, flash
+from flask_login import current_user, login_required
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
 
@@ -13,8 +14,6 @@ main = Blueprint('main', __name__)
 
 
 admin.add_view(ModelView(User, db.session))
-admin.add_view(ModelView(PortFolio, db.session))
-admin.add_view(ModelView(Share, db.session))
 admin.add_view(ModelView(BuyTransaction, db.session))
 admin.add_view(ModelView(SellTransaction, db.session))
 
@@ -32,9 +31,25 @@ def after_request(response):
 @login_required
 def index():
     """Show portfolio of stocks"""
-    return render_template("index.html", title='Home')
+    user = User.query.filter_by(username=current_user.username).first()
+    shares = []
+    return render_template("index.html", title='Portfolio', user=user, shares=shares)
 
-@main.errorhandler(Exception)
+@main.route("/quote", methods=["GET", "POST"])
+@login_required
+def quote():
+    """Search shares based on symbol"""
+    form = SearchForm()
+    if form.validate_on_submit():
+        stock = lookup(form.symbol.data)
+        if stock:
+            return render_template("quote.html", title='Quote', stock=stock)
+        else:
+            flash(f'Could not find a stock with symbol {form.symbol.data}', 'danger')
+            return redirect(url_for('main.quote'))
+    return render_template("quote.html", title='Quote', form=form)
+
+
 def handle_exception(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
