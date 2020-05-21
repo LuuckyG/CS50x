@@ -2,7 +2,7 @@ from webapp import db, bcrypt
 from webapp.users.models import User
 from webapp.users.utils import save_image
 from webapp.users.forms import LoginForm, RegistrationForm, UpdateAccountForm
-from webapp.transactions.models import PortFolio, Share, BuyTransaction, SellTransaction
+from webapp.transactions.models import BuyTransaction, SellTransaction
 
 import os
 from flask import Blueprint, redirect, render_template, url_for, request, flash, session, jsonify, current_app
@@ -66,6 +66,7 @@ def account():
         form.cash.data = f'{current_user.cash:.2f}'
     image_file = url_for('static', filename=f'profile_pics/{current_user.image_file}')
     return render_template('account.html', title='Account', image_file=image_file, form=form)
+
 
 @users.route("/register", methods=["GET", "POST"])
 def register():

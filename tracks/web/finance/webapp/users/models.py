@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from flask_security import RoleMixin
 
 from webapp import db, login_manager
-from webapp.transactions.models import PortFolio, Share, BuyTransaction, SellTransaction
+from webapp.transactions.models import BuyTransaction, SellTransaction
 
 
 # Define access levels
@@ -40,7 +40,6 @@ class User(db.Model, UserMixin):
     roles = db.relationship('Role', secondary='user_roles')
     buys = db.relationship('BuyTransaction', backref='buyer', lazy=True)
     sells = db.relationship('SellTransaction', backref='seller', lazy=True)
-    portfolio = db.relationship('PortFolio', uselist=False, back_populates='user')
 
     def __repr__(self):
         return f"{self.username}"
