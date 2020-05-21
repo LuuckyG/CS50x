@@ -2,12 +2,19 @@ from datetime import datetime
 from webapp import db
 
 
-class BuyTransaction(db.Model):
-    __tablename__ = 'buy_transaction'
+class Share(db.Model):
+    __tablename__ = 'share'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     symbol = db.Column(db.String(100), nullable=False)
     company_name =  db.Column(db.String(100), nullable=False)
+
+
+class BuyTransaction(db.Model):
+    __tablename__ = 'buy_transaction'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    share_id = db.Column(db.Integer, db.ForeignKey('share.id'), nullable=False)
     price_per_share = db.Column(db.Float, nullable=False)
     shares_amount = db.Column(db.Float, nullable=False)
     dollar_amount = db.Column(db.Float, nullable=False)
@@ -22,8 +29,7 @@ class SellTransaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     buy_id = db.Column(db.Integer, db.ForeignKey('buy_transaction.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    symbol = db.Column(db.String(100), nullable=False)
-    company_name =  db.Column(db.String(100), nullable=False)
+    share_id = db.Column(db.Integer, db.ForeignKey('share.id'), nullable=False)
     price_per_share = db.Column(db.Float, nullable=False)
     shares_amount = db.Column(db.Float, nullable=False)
     dollar_amount = db.Column(db.Float, nullable=False)
