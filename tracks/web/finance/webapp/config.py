@@ -19,3 +19,6 @@ class Config:
     SESSION_FILE_DIR = mkdtemp()
     SESSION_PERMANENT = False
     SESSION_TYPE = "filesystem"
+
+    # Quote API settings
+    API_KEY = os.environ.get('API_KEY')
