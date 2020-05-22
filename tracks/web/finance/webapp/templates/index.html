@@ -22,9 +22,9 @@
             <tr>
                 <th scope="row"> {{ share.symbol }} </th>
                 <td> {{ share.company_name }} </td>
-                <td> {{ share.shares_amount }} </td>
-                <td> ${{  '%0.2f'| format(share.price_per_share) }} </td>
-                <td> ${{  '%0.2f'| format(share.dollar_amount) }} </td>
+                <td> {{ share.num_shares }} </td>
+                <td> {{  '${:,.2f}'.format(share.total_value / share.num_shares) }} </td>
+                <td> {{  '${:,.2f}'.format(share.total_value) }} </td>
             </tr>
             {% endfor %}
             <tr>
@@ -32,14 +32,14 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td> ${{ '%0.2f'| format(user.cash) }} </td>
+                <td> {{ '${:,.2f}'.format(user.cash) }} </td>
             </tr>
             <tr>
                 <th></th>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><b>${{ '%0.2f'| format(user.portfolio_value + user.cash) }}</b></td>
+                <td><b>{{ '${:,.2f}'.format(user.portfolio_value + user.cash) }}</b></td>
             </tr>
         </tbody>
     </table>

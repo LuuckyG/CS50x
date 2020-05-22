@@ -3,3 +3,46 @@
 {% block title %}
     {{ title }}
 {% endblock title %}
+
+{% block main %}
+
+    <div class="content-section">
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <div class="form-group">
+                    {{ form.symbol.label(class="form-control-label") }}
+  
+                    {% if form.symbol.errors %}
+                        {{ form.symbol(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.symbol.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.symbol(class="form-control form-control-lg") }}
+                    {% endif %}          
+                </div>
+                <div class="form-group">
+                    {{ form.shares.label(class="form-control-label") }}
+                    
+                    {% if form.shares.errors %}
+                        {{ form.shares(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.shares.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.shares(class="form-control form-control-lg") }}
+                    {% endif %}            
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-success") }}
+            </div>
+        </form>
+    </div>
+
+{% endblock main %}

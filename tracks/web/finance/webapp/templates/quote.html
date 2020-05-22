@@ -13,7 +13,17 @@
                 <fieldset class="form-group">
                     <div class="form-group">
                         {{ form.symbol.label(class="form-control-label") }}
-                        {{ form.symbol(class="form-control form-control-lg") }}            
+
+                        {% if form.symbol.errors %}
+                            {{ form.symbol(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.symbol.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.symbol(class="form-control form-control-lg") }}
+                        {% endif %}        
                     </div>
                 </fieldset>
                 <div class="form-group">
@@ -24,26 +34,9 @@
     {% endif %}
 
     {% if stock %}
-        <table class="table">
-            <thead>
-                <tr>
-                <th scope="col">Company Name</th>
-                <th scope="col">Price</th>
-                <th scope="col">Symbol</th>
-                <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>    
-                <tr>
-                    <td> {{ stock['name'] }} </td>
-                    <td> {{ stock['price'] }} </td>
-                    <td> {{ stock['symbol'] }} </td>
-                    <td> <a href="{{ url_for('transactions.buy', stock=stock) }}" class="btn btn-outline-success" role="button" aria-pressed="true">I Want This Share!</a> </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <a href="{{ url_for('main.quote') }}" class="btn btn-dark" role="button" aria-pressed="true">Search Another Share</a>
+        A share of {{ stock['name'] }} ({{ stock['symbol'] }}) currently costs <b> ${{ stock['price'] }} </b>. <br>
+        <a href="{{ url_for('transactions.buy', symbol=stock['symbol']) }}" class="btn btn-outline-success mt-4" role="button" aria-pressed="true">I Want This Share!</a>
+        <a href="{{ url_for('main.quote') }}" class="btn btn-outline-dark mt-4" role="button" aria-pressed="true">Search Another Share</a>
     {% endif %}
 
 {% endblock main %}
