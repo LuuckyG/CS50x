@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from flask_security import RoleMixin
 
 from webapp import db, login_manager
-from webapp.transactions.models import BuyTransaction, SellTransaction
+from webapp.transactions.models import Share, BuyTransaction, SellTransaction
 
 
 # Define access levels
@@ -19,6 +19,7 @@ ACCESS = {
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -32,12 +33,13 @@ class User(db.Model, UserMixin):
     portfolio_value = db.Column(db.Float, default=0.00)
     portfolio_size = db.Column(db.Integer, nullable=False, default=0)
     num_trades = db.Column(db.Integer, nullable=False, default=0) 
-    num_positive_trades = db.Column(db.Integer, nullable=False, default=0)
-    num_negative_trades = db.Column(db.Integer, nullable=False, default=0)
+    num_positive_sales = db.Column(db.Integer, nullable=False, default=0)
+    num_negative_sales = db.Column(db.Integer, nullable=False, default=0)
     last_trade = db.Column(db.DateTime)
     status = db.Column(db.Boolean, nullable=False, server_default='1')
     access = db.Column(db.Integer, nullable=False, default=1)
     roles = db.relationship('Role', secondary='user_roles')
+    shares = db.relationship('Share', backref='owner', lazy=True)
     buys = db.relationship('BuyTransaction', backref='buyer', lazy=True)
     sells = db.relationship('SellTransaction', backref='seller', lazy=True)
 

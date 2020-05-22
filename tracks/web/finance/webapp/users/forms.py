@@ -15,6 +15,7 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])
+    cash = StringField('Starting Cash')
     submit = SubmitField('Sign Up')
 
     def validate_username(self, username):
@@ -41,7 +42,7 @@ class UpdateAccountForm(FlaskForm):
                            validators=[Length(min=2, max=20)])
     email = StringField('Email',
                         validators=[Email()])
-    cash = FloatField('Cash')
+    cash = FloatField('Add/Withdraw Cash')
     image = FileField('Update Profile Image', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
     submit = SubmitField('Update')
 
