@@ -8,6 +8,8 @@ class Share(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     symbol = db.Column(db.String(100), nullable=False)
     company_name =  db.Column(db.String(100), nullable=False)
+    num_shares = db.Column(db.Integer, nullable=False)
+    total_value = db.Column(db.Float, nullable=False, default=0.00)
 
 
 class BuyTransaction(db.Model):
@@ -15,8 +17,9 @@ class BuyTransaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     share_id = db.Column(db.Integer, db.ForeignKey('share.id'), nullable=False)
+    symbol = db.Column(db.String(100), nullable=False)
     price_per_share = db.Column(db.Float, nullable=False)
-    shares_amount = db.Column(db.Float, nullable=False)
+    num_shares = db.Column(db.Float, nullable=False)
     dollar_amount = db.Column(db.Float, nullable=False)
     date_bought = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -30,8 +33,9 @@ class SellTransaction(db.Model):
     buy_id = db.Column(db.Integer, db.ForeignKey('buy_transaction.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     share_id = db.Column(db.Integer, db.ForeignKey('share.id'), nullable=False)
+    symbol = db.Column(db.String(100), nullable=False)
     price_per_share = db.Column(db.Float, nullable=False)
-    shares_amount = db.Column(db.Float, nullable=False)
+    num_shares = db.Column(db.Float, nullable=False)
     dollar_amount = db.Column(db.Float, nullable=False)
     date_bought = db.Column(db.DateTime, db.ForeignKey('buy_transaction.date_bought'), nullable=False)
     date_sold = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
