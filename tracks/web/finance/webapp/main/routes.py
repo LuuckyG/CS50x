@@ -33,7 +33,7 @@ def after_request(response):
 def index():
     """Show portfolio of stocks"""
     user = User.query.filter_by(username=current_user.username).first()
-    shares = Share.query.filter_by(user_id=user.id).all()
+    shares = Share.query.order_by(Share.total_value.desc()).filter_by(user_id=user.id).all()
     return render_template("index.html", title='Portfolio', user=user, shares=shares)
 
 @main.route("/quote", methods=["GET", "POST"])
