@@ -1,8 +1,8 @@
 from webapp import admin, db, bcrypt
 from webapp.main.forms import SearchForm
-from webapp.main.helpers import apology, lookup, usd
+from webapp.main.helpers import apology, lookup
 from webapp.users.models import User
-from webapp.transactions.models import BuyTransaction, SellTransaction
+from webapp.transactions.models import Share, BuyTransaction, SellTransaction
 
 from flask_admin.contrib.sqla import ModelView
 from flask import Blueprint, render_template, redirect, url_for, flash
@@ -14,6 +14,7 @@ main = Blueprint('main', __name__)
 
 
 admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Share, db.session))
 admin.add_view(ModelView(BuyTransaction, db.session))
 admin.add_view(ModelView(SellTransaction, db.session))
 
@@ -32,7 +33,7 @@ def after_request(response):
 def index():
     """Show portfolio of stocks"""
     user = User.query.filter_by(username=current_user.username).first()
-    shares = []
+    shares = Share.query.filter_by(user_id=user.id).all()
     return render_template("index.html", title='Portfolio', user=user, shares=shares)
 
 @main.route("/quote", methods=["GET", "POST"])
