@@ -43,8 +43,7 @@ def buy():
                             symbol=stock['symbol'],
                             price_per_share=stock['price'],
                             num_shares=form.shares.data,
-                            dollar_amount=form.shares.data * stock['price'],
-                            date_bought=datetime.utcnow())
+                            dollar_amount=form.shares.data * stock['price'])
         
         db.session.add(buy_transaction)
         
@@ -74,18 +73,17 @@ def sell():
     form.symbol.choices = [(g.id, g.symbol) for g in Share.query.order_by('symbol').filter_by(user_id=current_user.id).all()]
 
     if form.validate_on_submit():
-        stock = lookup(form.symbol.data)        
+        choice_nr = form.symbol.data
+        symbol = form.symbol.choices[choice_nr - 1][1]
+
+        stock = lookup(symbol)        
 
         share = db.session.query(Share).\
                 filter(Share.user_id==current_user.id).\
                 filter(Share.symbol==stock['symbol']).first()
 
         share.num_shares -= form.shares.data
-
-        if (form.shares.data * stock['price']) > share.total_value:
-            db.session.delete(share)
-        else:
-            share.total_value -= form.shares.data * stock['price']      
+        share.total_value = share.num_shares * stock['price']      
         
         # Find when this share was bought
         bought_moment = db.session.query(BuyTransaction).\
@@ -93,19 +91,21 @@ def sell():
                             first()
 
         sell_transaction = SellTransaction(
+                            buy_id=bought_moment.id,
                             user_id=current_user.id,
                             share_id=share.id,
                             symbol=stock['symbol'],
                             price_per_share=stock['price'],
                             num_shares=form.shares.data,
                             dollar_amount=form.shares.data * stock['price'],
-                            date_bought=bought_moment.date_bought,
-                            date_sold=datetime.utcnow())
+                            date_bought=bought_moment.date_bought)
         
         db.session.add(sell_transaction)
         
         if bought_moment.price_per_share < stock['price']:
             current_user.num_positive_sales += 1
+        elif bought_moment.price_per_share == stock['price']:
+            current_user.num_equal_sales += 1
         else:
             current_user.num_negative_sales += 1
         
@@ -117,7 +117,7 @@ def sell():
 
         db.session.commit()
 
-        flash(f'Sold {form.share.data} share(s) of {form.symbol.data}!', 'success')
+        flash(f'Sold {form.shares.data} share(s) of {symbol}!', 'success')
         return redirect(url_for('main.index'))
 
     return render_template("sell.html", title='Sell', form=form)
@@ -127,9 +127,14 @@ def sell():
 @login_required
 def history():
     """Show history of transactions"""
+    buy_transactions = db.session.query(BuyTransaction).filter_by(user_id=current_user.id).all()
+    sell_transactions = db.session.query(BuyTransaction).filter_by(user_id=current_user.id).all()
 
-    transactions = db.session.query(BuyTransaction).\
-        join(SellTransaction).\
-        filter(user_id==current_user.id).all()
+    # print(buy_transactions)
+    print(sell_transactions)
 
-    return render_template("history.html", title='History')
+    transactions = buy_transactions.union(sell_transactions).order_by(BuyTransaction.date_bought, SellTransaction.date_sold)
+
+    print(transactions)
+
+    return render_template("history.html", title='History', user=current_user, transactions=transactions)

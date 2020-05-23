@@ -24,7 +24,7 @@ class BuyTransaction(db.Model):
     date_bought = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"Bought {self.shares_amount} share(s) of {self.symbol} for ${self.dollar_amount}"
+        return f"Bought {self.num_shares} share(s) of {self.symbol} for ${self.dollar_amount}"
 
 
 class SellTransaction(db.Model):
@@ -41,4 +41,4 @@ class SellTransaction(db.Model):
     date_sold = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     
     def __repr__(self):
-        return f"Sold {self.shares_amount} share(s) of {self.symbol} for ${self.dollar_amount}"
+        return f"Sold {self.num_shares} share(s) of {self.symbol} for ${self.dollar_amount}"
