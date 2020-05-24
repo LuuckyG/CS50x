@@ -39,7 +39,19 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><b>{{ '${:,.2f}'.format(user.portfolio_value + user.cash) }}</b></td>
+                <td>
+                {% if (user.portfolio_value + user.cash) > user.starting_cash %}
+                    <b style= color:green>{{ '${:,.2f}'.format(user.portfolio_value + user.cash) }}
+                        (+{{ (100 * ((user.portfolio_value + user.cash) / user.starting_cash) - 100) }}%)
+                    </b>
+                {% elif (user.portfolio_value + user.cash) == user.starting_cash %}
+                    <b>{{ '${:,.2f}'.format(user.portfolio_value + user.cash) }} (+0%) </b>
+                {% else %}
+                    <b style= color:red>{{ '${:,.2f}'.format(user.portfolio_value + user.cash) }} 
+                        ({{ (100 * (user.portfolio_value + user.cash) / user.starting_cash) - 100 }}%)
+                    </b>
+                {% endif %}
+                </td>
             </tr>
         </tbody>
     </table>

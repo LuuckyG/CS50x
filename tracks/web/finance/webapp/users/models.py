@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from flask_security import RoleMixin
 
 from webapp import db, login_manager
-from webapp.transactions.models import Share, BuyTransaction, SellTransaction
+from webapp.transactions.models import Share, Transaction
 
 
 # Define access levels
@@ -29,7 +29,8 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.png')
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     last_online = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    cash = db.Column(db.Float, default=10000.00)
+    starting_cash = db.Column(db.Float, nullable=False)
+    cash = db.Column(db.Float, default=0.00)
     portfolio_value = db.Column(db.Float, default=0.00)
     portfolio_size = db.Column(db.Integer, nullable=False, default=0)
     num_buys = db.Column(db.Integer, nullable=False, default=0) 
@@ -43,8 +44,7 @@ class User(db.Model, UserMixin):
     access = db.Column(db.Integer, nullable=False, default=1)
     roles = db.relationship('Role', secondary='user_roles')
     shares = db.relationship('Share', backref='owner', lazy=True)
-    buys = db.relationship('BuyTransaction', backref='buyer', lazy=True)
-    sells = db.relationship('SellTransaction', backref='seller', lazy=True)
+    transactions = db.relationship('Transaction', backref='user', lazy=True)
 
     def __repr__(self):
         return f"{self.username}"

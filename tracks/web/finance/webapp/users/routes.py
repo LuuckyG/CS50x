@@ -2,7 +2,6 @@ from webapp import db, bcrypt
 from webapp.users.models import User
 from webapp.users.utils import save_image
 from webapp.users.forms import LoginForm, RegistrationForm, UpdateAccountForm
-from webapp.transactions.models import BuyTransaction, SellTransaction
 
 import os
 from datetime import datetime
@@ -94,7 +93,11 @@ def register():
         else:
             cash = form.cash.data
         
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password, cash=cash)
+        user = User(username=form.username.data, 
+                    email=form.email.data, 
+                    password=hashed_password, 
+                    starting_cash=form.cash.data,
+                    cash=cash)
 
         db.session.add(user)
         db.session.commit()
