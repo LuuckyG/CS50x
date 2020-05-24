@@ -6,10 +6,37 @@
 
 {% block main %}
 
-    <h1 class="mb-3">Transactions by {{ user.username }} ({{ user.num_buys }} Buys, {{ user.num_sales}} Sales)</h1>
-    
-    {% for t in transactions.items %}
-        {{ t.num_shares }}
-    {% endfor %}
+    <h1 class="mb-3">Transactions by {{ user.username }}</h1> 
+    <p>({{ user.num_buys }} Buys, {{ user.num_sales}} Sales)</p>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Type Transaction</th>
+                <th scope="col">Shares</th>
+                <th scope="col">Symbol</th>
+                <th scope="col">Price</th>
+                <th scope="col">Date</th>
+            </tr>
+          </thead>
+        <tbody>    
+            {% for transaction in transactions %}
+            <tr>
+                <th scope="row"> {{ loop.index0 + 1 }} </th>
+                {% if transaction.is_buy %}
+                    <td> Bought </td>
+                    <td> {{ transaction.num_shares }} </td>
+                {% else %}
+                    <td> Sold </td>
+                    <td> ({{ -transaction.num_shares }}) </td>
+                {% endif %}         
+                <td> {{ transaction.symbol }} </td>
+                <td> {{ '${:,.2f}'.format(transaction.dollar_amount) }} </td>
+                <td> {{ transaction.date.strftime('%d-%m-%Y - %H:%M') }} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock main %}
