@@ -1,47 +1,28 @@
-nav .navbar-brand
-{
-    /* size for brand */
-    font-size: xx-large;
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* colors for brand */
-nav .navbar-brand .blue
-{
-    color: #537fbe;
-}
-nav .navbar-brand .red
-{
-    color: #ea433b;
-}
-nav .navbar-brand .yellow
-{
-    color: #f5b82e;
-}
-nav .navbar-brand .green
-{
-    color: #2e944b;
-}
+/* Navbar style */
+nav .navbar-brand {font-size: xx-large;}
+nav .navbar-brand .blue {color: #537fbe;}
+nav .navbar-brand .red {color: #ea433b;}
+nav .navbar-brand .yellow {color: #f5b82e;}
+nav .navbar-brand .green {color: #2e944b;}
 
+/* Main Page Style */
 main .form-control
 {
-    /* center form controls */
     display: inline-block;
-
-    /* override Bootstrap's 100% width for form controls */
     width: auto;
 }
 
-.col-md-8 {
-    /* center contents */
-    margin: auto;
-}
+.col-md-8 {margin: auto;}
 
 main
 {
-    /* scroll horizontally as needed */
     overflow-x: auto;
-
-    /* center contents */
     text-align: center;
 }
 
@@ -56,11 +37,38 @@ main
     align-items: center;
 }
 
+main img {max-width: 100%;}
 
-main img
-{
-    /* constrain images on small screens */
-    max-width: 100%;
+
+/* Portfolio Overview Style */
+.hidden-row {
+    display: flex;
+    flex-direction: row;
+    place-content: end space-between;
+}
+
+
+/* Account Page Style */
+
+.account {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.account-img {
+    width: 200px;
+}
+
+.account-update-form {
+    border: 1px solid grey;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+.account-update-form > form {
+    padding: 10px;
+    margin: 10px;
 }
 
 #account-update-img

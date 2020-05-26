@@ -1,7 +1,7 @@
-from webapp import db, bcrypt
+from webapp import db, bcrypt, mail
 from webapp.users.models import User
-from webapp.users.utils import save_image
-from webapp.users.forms import LoginForm, RegistrationForm, UpdateAccountForm
+from webapp.users.utils import save_image, send_reset_email
+from webapp.users.forms import LoginForm, RegistrationForm, UpdateAccountForm, RequestResetForm, ResetPasswordForm
 
 import os
 from datetime import datetime
@@ -12,6 +12,39 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 
 users = Blueprint('users', __name__)
+
+
+@users.route("/register", methods=["GET", "POST"])
+def register():
+    """Register user"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    
+    form = RegistrationForm()
+    if form.validate_on_submit():
+       
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+
+        if not form.cash.data:
+            cash = 0.00
+        else:
+            cash = form.cash.data
+        
+        user = User(first_name=form.first_name.data,
+                    last_name=form.last_name.data,
+                    username=form.username.data, 
+                    email=form.email.data, 
+                    password=hashed_password, 
+                    starting_cash=form.cash.data,
+                    cash=cash)
+
+        db.session.add(user)
+        db.session.commit()
+
+        # Redirect user to home page
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for("main.index"))
+    return render_template('register.html', title='Register', form=form)
 
 
 @users.route("/login", methods=["GET", "POST"])
@@ -77,32 +110,42 @@ def account():
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
 
-@users.route("/register", methods=["GET", "POST"])
-def register():
-    """Register user"""
+@users.route("/reset_password", methods=["GET", "POST"])
+def reset_request():
+    """Request password reset"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_email(user)
+        flash('An reset password email has been send.', 'info')
+        return redirect(url_for('users.login'))
+
+    return render_template('reset_request.html', form=form, title="Reset Password") 
+
+
+@users.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_token(token):
+    """Reset password"""
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     
-    form = RegistrationForm()
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('That is an invalid or expired token.', 'warning')
+        return redirect(url_for('users.reset_request'))
+
+    form = ResetPasswordForm()
     if form.validate_on_submit():
-       
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-
-        if not form.cash.data:
-            cash = 0.00
-        else:
-            cash = form.cash.data
-        
-        user = User(username=form.username.data, 
-                    email=form.email.data, 
-                    password=hashed_password, 
-                    starting_cash=form.cash.data,
-                    cash=cash)
-
-        db.session.add(user)
+        user.password = hashed_password
         db.session.commit()
 
-        # Redirect user to home page
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for("main.index"))
-    return render_template('register.html', title='Register', form=form)
+        flash(f'Your password has been updated! You are now able to log in.', 'success')
+        return redirect(url_for("users.login"))
+    return render_template('reset_token.html', form=form, title="Reset Password")
+
+
+

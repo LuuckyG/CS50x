@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_mail import Mail
 from flask_admin import Admin
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
@@ -9,6 +10,7 @@ from webapp.config import Config
 
 
 db = SQLAlchemy()
+mail = Mail()
 bcrypt = Bcrypt()
 migrate = Migrate()
 admin = Admin(template_mode='bootstrap3')
@@ -24,6 +26,7 @@ def create_app(config_obj=Config):
     app.config.from_object(Config)
 
     db.init_app(app)
+    mail.init_app(app)
     admin.init_app(app)
     bcrypt.init_app(app)
     migrate.init_app(app, db)

@@ -1,6 +1,8 @@
 from datetime import datetime
+from flask import current_app
 from flask_login import UserMixin
 from flask_security import RoleMixin
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from webapp import db, login_manager
 from webapp.transactions.models import Share, Transaction
@@ -23,10 +25,13 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(30))
+    last_name = db.Column(db.String(255))
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.png')
+    bio = db.Column(db.TEXT)
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     last_online = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     starting_cash = db.Column(db.Float, nullable=False)
@@ -54,6 +59,19 @@ class User(db.Model, UserMixin):
     
     def allowed(self, access_level):
         return self.access >= access_level
+    
+    def get_reset_token(self, expires_sec=1800):
+        s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
+    
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
 
 class Role(db.Model):

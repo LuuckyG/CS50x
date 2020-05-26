@@ -17,16 +17,27 @@
               <th scope="col">TOTAL</th>
             </tr>
           </thead>
-        <tbody>    
+        <tbody>
             {% for share in shares %}
-            <tr>
-                <th scope="row"> {{ share.symbol }} </th>
-                <td> {{ share.company_name }} </td>
-                <td> {{ share.num_shares }} </td>
-                <td> {{  '${:,.2f}'.format(share.total_value / share.num_shares) }} </td>
-                <td> {{  '${:,.2f}'.format(share.total_value) }} </td>
-            </tr>
-            {% endfor %}
+                <tr data-toggle="collapse" data-target="#{{ share.id }}">
+                    <th scope="row"> {{ share.symbol }} </th>
+                    <td> {{ share.company_name }} </td>
+                    <td> {{ share.num_shares }} </td>
+                    <td> {{  '${:,.2f}'.format(share.total_value / share.num_shares) }} </td>
+                    <td> {{  '${:,.2f}'.format(share.total_value) }} </td>
+                </tr>
+                <tr>
+                    <div>
+                        <td class="hidden-row" id="{{ share.id }}" colspan="5" style="vertical-align: middle;">
+                            {{ share.company_name}}
+                            <div class="hidden-row-buttons">
+                                <a href="{{ url_for('transactions.buy', symbol=share.symbol) }}" class="btn btn-sm btn-outline-success" role="button" aria-pressed="true">Buy More!</a>
+                                <a href="{{ url_for('transactions.sell') }}" class="btn btn-sm btn-outline-danger" role="button" aria-pressed="true">Sell This Share</a>
+                            </div>
+                        </td>
+                    </div>               
+                </tr>
+            {% endfor %}          
             <tr>
                 <th scope="row">Cash</th>
                 <td></td>
