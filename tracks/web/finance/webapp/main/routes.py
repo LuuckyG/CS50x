@@ -1,6 +1,6 @@
 from webapp import admin, db, bcrypt
 from webapp.main.forms import SearchForm
-from webapp.main.helpers import apology, lookup
+from webapp.main.helpers import lookup
 from webapp.users.models import User
 from webapp.transactions.models import Share, Transaction
 
@@ -26,6 +26,7 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+
 @main.route("/")
 @main.route("/index")
 @login_required
@@ -34,6 +35,7 @@ def index():
     user = User.query.filter_by(username=current_user.username).first()
     shares = Share.query.order_by(Share.total_value.desc()).filter_by(user_id=user.id).all()
     return render_template("index.html", title='Portfolio', user=user, shares=shares)
+
 
 @main.route("/quote", methods=["GET", "POST"])
 @login_required
@@ -48,14 +50,3 @@ def quote():
             flash(f'Could not find a stock with symbol {form.symbol.data}', 'danger')
             return redirect(url_for('main.quote'))
     return render_template("quote.html", title='Quote', form=form)
-
-
-def handle_exception(e):
-    """Handle error"""
-    if not isinstance(e, HTTPException):
-        e = InternalServerError()
-    return apology(e.name, e.code)
-
-# Listen for errors
-for code in default_exceptions:
-    main.errorhandler(code)(handle_exception)
