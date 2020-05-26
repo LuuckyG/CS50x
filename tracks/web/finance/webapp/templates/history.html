@@ -33,7 +33,7 @@
                 {% endif %}         
                 <td> {{ transaction.symbol }} </td>
                 <td> {{ '${:,.2f}'.format(transaction.dollar_amount) }} </td>
-                <td> {{ transaction.date.strftime('%d-%m-%Y - %H:%M') }} </td>
+                <td> {{ transaction.date.strftime('%H:%M | %d-%m-%Y') }} </td>
             </tr>
             {% endfor %}
         </tbody>

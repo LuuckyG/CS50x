@@ -62,3 +62,9 @@ main img
     /* constrain images on small screens */
     max-width: 100%;
 }
+
+#account-update-img
+{
+    width: fit-content;
+}
+
