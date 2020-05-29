@@ -60,6 +60,12 @@ main img {max-width: 100%;}
     width: 200px;
 }
 
+.user-info, .user-bio {text-align: left;}
+
+.user-bio {
+    max-width: 250px;
+}
+
 .account-update-form {
     border: 1px solid grey;
     border-radius: 5px;
@@ -76,3 +82,20 @@ main img {max-width: 100%;}
     width: fit-content;
 }
 
+.input-group {
+    position: relative;
+    display: flex;
+	margin: auto;
+	justify-content: space-evenly;
+	align-content: center;
+	align-items: center;
+}
+
+.input-group > label {
+	margin-right: 10px;
+	align-items: center;
+}
+
+input[type=radio] {
+	margin-right: 5px;
+}
