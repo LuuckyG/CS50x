@@ -42,11 +42,11 @@ main img {max-width: 100%;}
 
 /* Portfolio Overview Style */
 .hidden-row {
+    padding: 0 !important;
     display: flex;
     flex-direction: row;
     place-content: end space-between;
 }
-
 
 /* Account Page Style */
 

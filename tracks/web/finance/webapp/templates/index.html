@@ -6,7 +6,7 @@
 
 {% block main %}
 
-    <table class="table table-hover">
+    <table class="table table-hover" style="border-collapse:collapse;">
         <caption>Portfolio of {{ user.username }}</caption>
         <thead>
             <tr>
@@ -19,7 +19,7 @@
           </thead>
         <tbody>
             {% for share in shares.items %}
-                <tr data-toggle="collapse" data-target="#{{ share.id }}">
+                <tr data-toggle="collapse" data-target=".share-{{ share.id }}" class="accordion-toggle">
                     <th scope="row"> {{ share.symbol }} </th>
                     <td> {{ share.company_name }} </td>
                     <td> {{ share.num_shares }} </td>
@@ -27,18 +27,17 @@
                     <td> {{  '${:,.2f}'.format(share.total_value) }} </td>
                 </tr>
                 <tr>
-                    <div>
-                        <td class="hidden-row" id="{{ share.id }}" colspan="5" style="vertical-align: middle;">
-                            <div class="collapse">
-                                {{ share.company_name}}
-                                <div class="hidden-row-buttons">
-                                    <a class="btn btn-sm btn-outline-success" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#buyModal"><b>Buy More!</b></a>
-                                    <a class="btn btn-sm btn-outline-danger" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#sellModal"><b>Sell This Share</b></a>
-                                </div>  
-                            </div>
-                            
-                        </td>
-                    </div>               
+                    <td class="hidden-row " style="vertical-align: middle;" colspan="4">
+                        <div class="accordian-body collapse share-{{ share.id }}">
+                            {{ share.company_name}}
+                        </div>
+                    </td>
+                    <td class="hidden-row" style="vertical-align: middle;">
+                        <div class="collapse hidden-button-index share-{{ share.id }}">
+                            <a class="btn btn-sm btn-outline-success btn-buy" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#buyModal"><b>Buy More!</b></a>
+                            <a class="btn btn-sm btn-outline-danger btn-sell" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#sellModal"><b>Sell This Share</b></a>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}          
             <tr>
