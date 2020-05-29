@@ -31,8 +31,8 @@
                         <td class="hidden-row" id="{{ share.id }}" colspan="5" style="vertical-align: middle;">
                             {{ share.company_name}}
                             <div class="hidden-row-buttons">
-                                <a href="{{ url_for('transactions.buy', symbol=share.symbol) }}" class="btn btn-sm btn-outline-success" role="button" aria-pressed="true">Buy More!</a>
-                                <a href="{{ url_for('transactions.sell') }}" class="btn btn-sm btn-outline-danger" role="button" aria-pressed="true">Sell This Share</a>
+                                <a class="btn btn-sm btn-outline-success" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#buyModal">Buy More!</a>
+                                <a class="btn btn-sm btn-outline-danger" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#sellModal">Sell This Share</a>
                             </div>
                         </td>
                     </div>               
@@ -53,18 +53,64 @@
                 <td>
                 {% if (user.portfolio_value + user.cash) > user.starting_cash %}
                     <b style= color:green>{{ '${:,.2f}'.format(user.portfolio_value + user.cash) }}
-                        (+{{ (100 * ((user.portfolio_value + user.cash) / user.starting_cash) - 100) }}%)
+                        (+{{ '{:.2f}'.format((100 * ((user.portfolio_value + user.cash) / user.starting_cash) - 100)) }}%)
                     </b>
                 {% elif (user.portfolio_value + user.cash) == user.starting_cash %}
                     <b>{{ '${:,.2f}'.format(user.portfolio_value + user.cash) }} (+0%) </b>
                 {% else %}
                     <b style= color:red>{{ '${:,.2f}'.format(user.portfolio_value + user.cash) }} 
-                        ({{ (100 * (user.portfolio_value + user.cash) / user.starting_cash) - 100 }}%)
+                        ({{ '{:.2f}'.format((100 * ((user.portfolio_value + user.cash) / user.starting_cash) - 100)) }}%)
                     </b>
                 {% endif %}
                 </td>
             </tr>
         </tbody>
     </table>
+
+    <!-- Buy Modal -->
+    <div class="modal fade" id="buyModal" tabindex="-1" role="dialog" aria-labelledby="buyModalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="buyModalTitle">Buy More Shares</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Do you want to buy more of this stock?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <form action="{{ url_for('main.index') }}" method="POST">
+                        <button type="button" class="btn btn-success">Yes, Buy!</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sell Modal -->
+    <div class="modal fade" id="sellModal" tabindex="-1" role="dialog" aria-labelledby="sellModalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sellModalTitle">Sell Shares</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to sell?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <form action="{{ url_for('main.index') }}" method="POST">
+                        <button type="button" class="btn btn-danger">Yes, Sell!</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock main %}

@@ -34,6 +34,18 @@ def index():
     """Show portfolio of stocks"""
     user = User.query.filter_by(username=current_user.username).first()
     shares = Share.query.order_by(Share.total_value.desc()).filter_by(user_id=user.id).all()
+
+    current_portfolio_value = 0.00
+
+    for share in shares:
+        current_value = lookup(share.symbol)['price']
+        current_total_value = share.num_shares * current_value
+        share.total_value = current_total_value
+        current_portfolio_value += current_total_value
+    
+    user.portfolio_value = current_portfolio_value
+    db.session.commit()
+
     return render_template("index.html", title='Portfolio', user=user, shares=shares)
 
 
