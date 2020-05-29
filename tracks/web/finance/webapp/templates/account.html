@@ -9,17 +9,28 @@
         <div class="account-info">
             <img class="rounded-circle account-img" src="{{ image_file }}">
             <div class="media-body">
-                <h2 class="account-heading">{{ current_user.first_name }} {{ current_user.last_name }} </h2>
-                <p class="text-secondary">{{ current_user.username.upper() }}</p>
-                <p class="text-secondary"> {{ current_user.email }}</p>
-                <p class="text-secondary"> Portfolio value: {{ '${:,.2f}'.format(current_user.cash + current_user.portfolio_value) }}</p>
+                <h2 class="account-heading mb-4">{{ current_user.first_name }} {{ current_user.last_name }} </h2>
+                <div class="user-info">
+                    <p class="text-secondary">
+                        {{ current_user.username.upper() }} <br>
+                        {{ current_user.email }}<br>
+                        Portfolio value: {{ '${:,.2f}'.format(current_user.cash + current_user.portfolio_value) }}
+                    </p>  
+                </div>
+                
+                <div class="user-bio">
+                    <p class="text-secondary">
+                        <span class="border-bottom mb-4">About me:</span><br>
+                        {{ current_user.bio }}
+                    </p>
+                </div>
             </div>
         </div>
         <div class="account-update-form">
             <form action="" method="post" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
-                <legend>Update Account</legend>
                 <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Update Account</legend>
                     <div class="form-group">
                         {{ form.username.label(class="form-control-label") }}
 
@@ -49,18 +60,38 @@
                         {% endif %}   
                     </div>
                     <div class="form-group">
-                        {{ form.cash.label(class="form-control-label") }}
+                        {{ form.bio.label(class="form-control-label") }}
 
-                        {% if form.cash.errors %}
-                            {{ form.cash(class="form-control form-control-lg is-invalid") }}
+                        {% if form.bio.errors %}
+                            {{ form.bio(class="form-control form-control-lg is-invalid") }}
                             <div class="invalid-feedback">
-                                {% for error in form.cash.errors %}
+                                {% for error in form.bio.errors %}
                                     <span>{{ error }}</span>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            {{ form.cash(class="form-control form-control-lg") }}
+                            {{ form.bio(class="form-control form-control-lg") }}
                         {% endif %}   
+                    </div>
+                    <div class="form-group account-cash-update">
+                        <div class="form-group">
+                            {{ form.cash.label(class="form-control-label") }}
+                            {{ form.cash(class="form-control form-control-lg") }}
+                        </div>
+                        
+                        <div class="input-group">
+                            <div class="input-group-option">
+                                <input type="radio" id="deposit" name="cash_option" value="deposit" checked>
+                                <label for="deposit">Deposit</label>
+                            </div>
+                            <div class="input-group-option">
+                                <input type="radio" id="withdraw" name="cash_option" value="withdraw">
+                                <label for="withdraw">Withdaw</label>
+                            </div>
+                            
+                        </div>
+                        
+                        
                     </div>
                     <div class="form-group">
                         {{ form.image.label() }}
