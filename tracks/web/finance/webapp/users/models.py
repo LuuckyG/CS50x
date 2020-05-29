@@ -31,7 +31,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.png')
-    bio = db.Column(db.TEXT)
+    bio = db.Column(db.TEXT, default='')
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     last_online = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     starting_cash = db.Column(db.Float, nullable=False)

@@ -4,6 +4,7 @@ from webapp.users.models import User
 from webapp.transactions.models import Share, Transaction
 from webapp.transactions.forms import BuyForm, SellForm
 
+import os
 from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
@@ -78,7 +79,7 @@ def sell():
         stock = lookup(share.symbol)
 
         share.num_shares -= form.shares.data
-        share.total_value = share.num_shares * stock['price']      
+        share.total_value = share.num_shares * stock['price']
         
         # Find when this share was bought
         bought_moment = db.session.query(Transaction).\
@@ -118,8 +119,11 @@ def sell():
 
 
 @transactions.route("/history")
+@transactions.route("/history/page/<int:page>")
 @login_required
-def history():
+def history(page=1):
     """Show history of transactions"""
-    transactions = Transaction.query.order_by(Transaction.date.desc()).filter_by(user_id=current_user.id)
+    transactions = Transaction.query.order_by(Transaction.date.desc()).\
+        filter_by(user_id=current_user.id).\
+        paginate(page=page, per_page=int(os.environ.get('ROWS_PER_TABLE')))
     return render_template("history.html", title='History', user=current_user, transactions=transactions)

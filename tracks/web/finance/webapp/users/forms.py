@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 
 from webapp.users.models import User
@@ -15,7 +15,7 @@ class RegistrationForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password',
+    confirmation = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])
     cash = StringField('Starting Cash')
     submit = SubmitField('Sign Up')
@@ -44,7 +44,8 @@ class UpdateAccountForm(FlaskForm):
                            validators=[Length(min=2, max=20)])
     email = StringField('Email',
                         validators=[Email()])
-    cash = FloatField('Add/Withdraw Cash')
+    bio = TextAreaField('Update About Me')                    
+    cash = FloatField('Deposit/Withdraw Cash')
     image = FileField('Update Profile Image', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
     submit = SubmitField('Update')
 
@@ -73,6 +74,6 @@ class RequestResetForm(FlaskForm):
 
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password',
+    confirmation = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')

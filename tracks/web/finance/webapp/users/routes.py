@@ -99,13 +99,19 @@ def account():
             current_user.image_file = image_file
         current_user.username = form.username.data
         current_user.email = form.email.data
-        current_user.cash += form.cash.data
+        current_user.bio = form.bio.data
+        if request.form['cash_option'] == 'deposit':
+            current_user.cash += form.cash.data
+        else:
+            current_user.cash -= form.cash.data
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('users.account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
+        form.bio.data = current_user.bio
+        form.cash.data = 0.0
     image_file = url_for('static', filename=f'profile_pics/{current_user.image_file}')
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
