@@ -1,6 +1,8 @@
 import os
 from tempfile import mkdtemp
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 
 class Config:
     """ Flask application config """
@@ -30,3 +32,6 @@ class Config:
     MAIL_USERNAME = os.environ.get('EMAIL_USER')
     MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
     ADMINS = os.environ.get('ADMINS')
+
+    # Display settings
+    ROWS_PER_TABLE = int(os.environ.get('ROWS_PER_TABLE') or 15)

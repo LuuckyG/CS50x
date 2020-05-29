@@ -18,7 +18,7 @@
             </tr>
           </thead>
         <tbody>
-            {% for share in shares %}
+            {% for share in shares.items %}
                 <tr data-toggle="collapse" data-target="#{{ share.id }}">
                     <th scope="row"> {{ share.symbol }} </th>
                     <td> {{ share.company_name }} </td>
@@ -29,11 +29,14 @@
                 <tr>
                     <div>
                         <td class="hidden-row" id="{{ share.id }}" colspan="5" style="vertical-align: middle;">
-                            {{ share.company_name}}
-                            <div class="hidden-row-buttons">
-                                <a class="btn btn-sm btn-outline-success" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#buyModal">Buy More!</a>
-                                <a class="btn btn-sm btn-outline-danger" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#sellModal">Sell This Share</a>
+                            <div class="collapse">
+                                {{ share.company_name}}
+                                <div class="hidden-row-buttons">
+                                    <a class="btn btn-sm btn-outline-success" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#buyModal"><b>Buy More!</b></a>
+                                    <a class="btn btn-sm btn-outline-danger" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#sellModal"><b>Sell This Share</b></a>
+                                </div>  
                             </div>
+                            
                         </td>
                     </div>               
                 </tr>
@@ -66,6 +69,18 @@
             </tr>
         </tbody>
     </table>
+
+    {% for page_num in shares.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if shares.page == page_num %}
+          <a class="btn btn-info mb-4" href="{{ url_for('main.index', page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('main.index', page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+    {% endfor %}
 
     <!-- Buy Modal -->
     <div class="modal fade" id="buyModal" tabindex="-1" role="dialog" aria-labelledby="buyModalTitle" aria-hidden="true">

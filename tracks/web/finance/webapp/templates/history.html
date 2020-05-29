@@ -18,11 +18,16 @@
                 <th scope="col">Symbol</th>
                 <th scope="col">Price</th>
                 <th scope="col">Date</th>
+                <th scope="col">Time</th>
             </tr>
           </thead>
         <tbody>    
-            {% for transaction in transactions %}
-            <tr>
+            {% for transaction in transactions.items %}
+            {% if transaction.is_buy %}
+                <tr style="background: rgba(144, 238, 144, 0.5);">
+            {% else %}
+                <tr style="background: rgba(240, 128, 128, 0.5);">
+            {% endif %}
                 <th scope="row"> {{ loop.index0 + 1 }} </th>
                 {% if transaction.is_buy %}
                     <td> Bought </td>
@@ -33,10 +38,23 @@
                 {% endif %}         
                 <td> {{ transaction.symbol }} </td>
                 <td> {{ '${:,.2f}'.format(transaction.dollar_amount) }} </td>
-                <td> {{ transaction.date.strftime('%H:%M | %d-%m-%Y') }} </td>
+                <td> {{ transaction.date.strftime('%d-%m-%Y') }} </td>
+                <td> {{ transaction.date.strftime('%H:%M') }} </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    {% for page_num in transactions.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if transactions.page == page_num %}
+          <a class="btn btn-info mb-4" href="{{ url_for('transactions.history', page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('transactions.history', page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+    {% endfor %}
 
 {% endblock main %}

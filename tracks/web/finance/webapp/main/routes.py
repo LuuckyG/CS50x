@@ -4,8 +4,9 @@ from webapp.main.helpers import lookup
 from webapp.users.models import User
 from webapp.transactions.models import Share, Transaction
 
+import os
 from flask_admin.contrib.sqla import ModelView
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_required
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
@@ -29,15 +30,16 @@ def after_request(response):
 
 @main.route("/")
 @main.route("/index")
+@main.route("/index/page/<int:page>")
 @login_required
-def index():
+def index(page=1):
     """Show portfolio of stocks"""
     user = User.query.filter_by(username=current_user.username).first()
-    shares = Share.query.order_by(Share.total_value.desc()).filter_by(user_id=user.id).all()
+    shares = Share.query.order_by(Share.total_value.desc()).filter_by(user_id=user.id).paginate(page=page, per_page=int(os.environ.get('ROWS_PER_TABLE')))
 
     current_portfolio_value = 0.00
 
-    for share in shares:
+    for share in shares.items:
         current_value = lookup(share.symbol)['price']
         current_total_value = share.num_shares * current_value
         share.total_value = current_total_value
