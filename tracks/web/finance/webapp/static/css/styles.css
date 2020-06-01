@@ -43,9 +43,17 @@ main img {max-width: 100%;}
 /* Portfolio Overview Style */
 .hidden-row {
     padding: 0 !important;
+    text-align: left;
+}
+
+.hidden-button-index {
     display: flex;
-    flex-direction: row;
-    place-content: end space-between;
+    justify-content: flex-end;
+    margin: 10px;    
+}
+
+.hidden-button-index > a {
+    margin-right: 10px;
 }
 
 /* Account Page Style */
