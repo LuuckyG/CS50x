@@ -88,11 +88,12 @@ def logout():
     return redirect(url_for('users.login'))
 
 
-@users.route("/account", methods=['GET', 'POST'])
+@users.route("/account/<string:username>", methods=['GET', 'POST'])
 @login_required
-def account():
+def account(username):
     """Show user account"""
     form = UpdateAccountForm()
+    user = User.query.filter_by(username=username).first()
     if form.validate_on_submit():
         if form.image.data:
             image_file = save_image(form.image.data)
@@ -106,14 +107,14 @@ def account():
             current_user.cash -= form.cash.data
         db.session.commit()
         flash('Your account has been updated!', 'success')
-        return redirect(url_for('users.account'))
+        return redirect(url_for('users.account', user=user))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
         form.bio.data = current_user.bio
         form.cash.data = 0.0
     image_file = url_for('static', filename=f'profile_pics/{current_user.image_file}')
-    return render_template('account.html', title='Account', image_file=image_file, form=form)
+    return render_template('account.html', title='Account', image_file=image_file, form=form, user=user)
 
 
 @users.route("/reset_password", methods=["GET", "POST"])

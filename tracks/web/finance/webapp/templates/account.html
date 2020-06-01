@@ -9,105 +9,108 @@
         <div class="account-info">
             <img class="rounded-circle account-img" src="{{ image_file }}">
             <div class="media-body">
-                <h2 class="account-heading mb-4">{{ current_user.first_name }} {{ current_user.last_name }} </h2>
+                <h2 class="account-heading mb-4">{{ user.first_name }} {{ user.last_name }} </h2>
                 <div class="user-info">
                     <p class="text-secondary">
-                        {{ current_user.username.upper() }} <br>
-                        {{ current_user.email }}<br>
-                        Portfolio value: {{ '${:,.2f}'.format(current_user.cash + current_user.portfolio_value) }}
+                        {{ user.username.upper() }} <br>
+                        {{ user.email }}<br>
+                        Portfolio value: {{ '${:,.2f}'.format(user.cash + user.portfolio_value) }}
                     </p>  
                 </div>
                 
                 <div class="user-bio">
                     <p class="text-secondary">
                         <span class="border-bottom mb-4">About me:</span><br>
-                        {{ current_user.bio }}
+                        {{ user.bio }}
                     </p>
                 </div>
             </div>
         </div>
-        <div class="account-update-form">
-            <form action="" method="post" enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
-                <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Update Account</legend>
-                    <div class="form-group">
-                        {{ form.username.label(class="form-control-label") }}
 
-                        {% if form.username.errors %}
-                            {{ form.username(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.username.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.username(class="form-control form-control-lg") }}
-                        {% endif %}
-                    </div>
-                    <div class="form-group">
-                        {{ form.email.label(class="form-control-label") }}
-
-                        {% if form.email.errors %}
-                            {{ form.email(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.email.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.email(class="form-control form-control-lg") }}
-                        {% endif %}   
-                    </div>
-                    <div class="form-group">
-                        {{ form.bio.label(class="form-control-label") }}
-
-                        {% if form.bio.errors %}
-                            {{ form.bio(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.bio.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.bio(class="form-control form-control-lg") }}
-                        {% endif %}   
-                    </div>
-                    <div class="form-group account-cash-update">
+        {% if current_user.username == user.username %}
+            <div class="account-update-form">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Update Account</legend>
                         <div class="form-group">
-                            {{ form.cash.label(class="form-control-label") }}
-                            {{ form.cash(class="form-control form-control-lg") }}
+                            {{ form.username.label(class="form-control-label") }}
+
+                            {% if form.username.errors %}
+                                {{ form.username(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.username.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.username(class="form-control form-control-lg") }}
+                            {% endif %}
                         </div>
-                        
-                        <div class="input-group">
-                            <div class="input-group-option">
-                                <input type="radio" id="deposit" name="cash_option" value="deposit" checked>
-                                <label for="deposit">Deposit</label>
-                            </div>
-                            <div class="input-group-option">
-                                <input type="radio" id="withdraw" name="cash_option" value="withdraw">
-                                <label for="withdraw">Withdaw</label>
+                        <div class="form-group">
+                            {{ form.email.label(class="form-control-label") }}
+
+                            {% if form.email.errors %}
+                                {{ form.email(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.email(class="form-control form-control-lg") }}
+                            {% endif %}   
+                        </div>
+                        <div class="form-group">
+                            {{ form.bio.label(class="form-control-label") }}
+
+                            {% if form.bio.errors %}
+                                {{ form.bio(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.bio.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.bio(class="form-control form-control-lg") }}
+                            {% endif %}   
+                        </div>
+                        <div class="form-group account-cash-update">
+                            <div class="form-group">
+                                {{ form.cash.label(class="form-control-label") }}
+                                {{ form.cash(class="form-control form-control-lg") }}
                             </div>
                             
+                            <div class="input-group">
+                                <div class="input-group-option">
+                                    <input type="radio" id="deposit" name="cash_option" value="deposit" checked>
+                                    <label for="deposit">Deposit</label>
+                                </div>
+                                <div class="input-group-option">
+                                    <input type="radio" id="withdraw" name="cash_option" value="withdraw">
+                                    <label for="withdraw">Withdaw</label>
+                                </div>
+                                
+                            </div>
+                            
+                            
                         </div>
-                        
-                        
-                    </div>
-                    <div class="form-group">
-                        {{ form.image.label() }}
-                        {{ form.image(class="form-control-file", id="account-update-img") }}
+                        <div class="form-group">
+                            {{ form.image.label() }}
+                            {{ form.image(class="form-control-file", id="account-update-img") }}
 
-                        {% if form.image.errors %}
-                            {% for error in form.image.errors %}
-                                <span class="text-danger">{{ error }}</span></br>
-                            {% endfor %}
-                        {% endif %}
+                            {% if form.image.errors %}
+                                {% for error in form.image.errors %}
+                                    <span class="text-danger">{{ error }}</span></br>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-outline-info") }}
                     </div>
-                </fieldset>
-                <div class="form-group">
-                    {{ form.submit(class="btn btn-outline-info") }}
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        {% endif %}
     </div>
 {% endblock main %}
