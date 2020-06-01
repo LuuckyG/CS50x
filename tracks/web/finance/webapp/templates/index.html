@@ -19,7 +19,7 @@
           </thead>
         <tbody>
             {% for share in shares.items %}
-                <tr data-toggle="collapse" data-target=".share-{{ share.id }}" class="accordion-toggle">
+                <tr data-toggle="collapse" data-target=".share-{{ share.id }}">
                     <th scope="row"> {{ share.symbol }} </th>
                     <td> {{ share.company_name }} </td>
                     <td> {{ share.num_shares }} </td>
@@ -27,15 +27,19 @@
                     <td> {{  '${:,.2f}'.format(share.total_value) }} </td>
                 </tr>
                 <tr>
-                    <td class="hidden-row " style="vertical-align: middle;" colspan="4">
-                        <div class="accordian-body collapse share-{{ share.id }}">
-                            {{ share.company_name}}
+                    <td class="hidden-row " style="vertical-align: middle;" colspan="2">
+                        <div class="collapse share-{{ share.id }}">
+                            <p>
+                                Additional information about <b>{{ share.company_name}}</b>:</br>
+                                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Natus quia similique, laborum sunt minus placeat? 
+                                Accusantium, autem ex. Doloremque debitis dicta iste exercitationem quasi tempore dignissimos aliquid? Pariatur, provident cupiditate?
+                            </p>
                         </div>
                     </td>
-                    <td class="hidden-row" style="vertical-align: middle;">
+                    <td class="hidden-row" style="vertical-align: middle;" colspan="3">
                         <div class="collapse hidden-button-index share-{{ share.id }}">
-                            <a class="btn btn-sm btn-outline-success btn-buy" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#buyModal"><b>Buy More!</b></a>
-                            <a class="btn btn-sm btn-outline-danger btn-sell" role="button" aria-pressed="true"  type="button" data-toggle="modal" data-target="#sellModal"><b>Sell This Share</b></a>
+                            <button class="btn btn-sm btn-outline-success btn-buy" type="button" data-toggle="modal" data-target="#buyModal" data-share-symbol="{{ share.symbol }}"><b>Buy More!</b></button>
+                            <button class="btn btn-sm btn-outline-danger btn-sell" type="button" data-toggle="modal" data-target="#sellModal" data-share-symbol="{{ share.symbol }}"><b>Sell This Share</b></button>
                         </div>
                     </td>
                 </tr>
@@ -69,12 +73,13 @@
         </tbody>
     </table>
 
+    <!-- Page numbers -->
     {% for page_num in shares.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
       {% if page_num %}
         {% if shares.page == page_num %}
-          <a class="btn btn-info mb-4" href="{{ url_for('main.index', page=page_num) }}">{{ page_num }}</a>
+          <a class="btn btn-secondary mb-4" href="{{ url_for('main.index', page=page_num) }}">{{ page_num }}</a>
         {% else %}
-          <a class="btn btn-outline-info mb-4" href="{{ url_for('main.index', page=page_num) }}">{{ page_num }}</a>
+          <a class="btn btn-outline-secondary mb-4" href="{{ url_for('main.index', page=page_num) }}">{{ page_num }}</a>
         {% endif %}
       {% else %}
         ...
@@ -92,13 +97,21 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Do you want to buy more of this stock?</p>
+                    <form action="{{ url_for('transactions.instant_buy') }}" method="POST">
+                        <p>Do you want to buy more of this stock?</p>
+                        <div class="form-group share-symbol">
+                            <label for="buy-symbol">Share:</label>
+                            <input type="text" class="form-control" id="buy-symbol" name="buy-symbol">
+                        </div>
+                        <div class="form-group">
+                            <label for="buy-shares">Number of shares:</label>
+                            <input type="number" class="form-control" id="buy-shares" name="buy-shares">
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                    <form action="{{ url_for('main.index') }}" method="POST">
-                        <button type="button" class="btn btn-success">Yes, Buy!</button>
-                    </form>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Yes, Buy!</button>
                 </div>
             </div>
         </div>
@@ -115,16 +128,56 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to sell?</p>
+                    <form action="{{ url_for('transactions.instant_sell') }}" method="POST">
+                        <p>Are you sure you want to sell?</p>
+                        <div class="form-group share-symbol">
+                            <label for="sell-symbol">Share:</label>
+                            <input type="text" class="form-control" id="sell-symbol" name="sell-symbol">
+                        </div>
+                        <div class="form-group">
+                            <label for="sell-shares">Number of shares:</label>
+                            <input type="number" class="form-control" id="sell-shares" name="sell-shares">
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                    <form action="{{ url_for('main.index') }}" method="POST">
-                        <button type="button" class="btn btn-danger">Yes, Sell!</button>
-                    </form>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Yes, Sell!</button>
                 </div>
             </div>
         </div>
     </div>
 
 {% endblock main %}
+
+{% block scripts %}
+    <!-- Transition for the portfolio table -->
+    <script>
+        $('.collapse').on('show.bs.collapse', function () {
+            $('.collapse.in').collapse('hide');
+        });
+    </script>
+
+    <!-- Buy Modal Script -->
+    <script>
+        $('#buyModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var symbol = button.data('share-symbol'); // Extract info from data-* attributes
+        var modal = $(this);
+        modal.find('.modal-title').text('Buy More ' + symbol + ' Shares')
+        modal.find('.modal-body .share-symbol input').val(symbol);
+        })
+    </script>
+
+    <!-- Sell Modal Script -->
+    <script>
+        $('#sellModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var symbol = button.data('share-symbol'); // Extract info from data-* attributes
+        var modal = $(this);
+        modal.find('.modal-title').text('Sell ' + symbol + ' Shares')
+        modal.find('.modal-body .share-symbol input').val(symbol);
+        })
+    </script>
+
+{% endblock scripts %}

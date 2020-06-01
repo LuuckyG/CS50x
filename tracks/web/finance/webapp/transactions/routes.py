@@ -49,7 +49,6 @@ def buy():
         
         db.session.add(buy_transaction)
         
-        # Update user object
         current_user.last_buy = datetime.utcnow()
         current_user.num_buys += 1
         current_user.cash -= form.shares.data * stock['price']
@@ -81,7 +80,6 @@ def sell():
         share.num_shares -= form.shares.data
         share.total_value = share.num_shares * stock['price']
         
-        # Find when this share was bought
         bought_moment = db.session.query(Transaction).\
                             filter(Transaction.share_id==share.id).\
                             filter(Transaction.is_buy==True).first()
@@ -104,7 +102,6 @@ def sell():
         else:
             current_user.num_negative_sales += 1
         
-        # Update user object
         current_user.last_sale = datetime.utcnow()
         current_user.num_sales += 1
         current_user.cash += form.shares.data * stock['price']
@@ -127,3 +124,103 @@ def history(page=1):
         filter_by(user_id=current_user.id).\
         paginate(page=page, per_page=int(os.environ.get('ROWS_PER_TABLE')))
     return render_template("history.html", title='History', user=current_user, transactions=transactions)
+
+
+@transactions.route("/buy/instant", methods=["GET", "POST"])
+@login_required
+def instant_buy():
+    """Buy stocks instantly via a modal"""
+    if request.form.get('buy-symbol') == "" or request.form.get('buy-shares') == "":
+        flash(f"Please fill in all the fields.", "info")
+        return redirect(url_for("main.index"))
+
+    symbol = request.form.get('buy-symbol')
+    shares = float(request.form.get('buy-shares'))
+    
+    stock = lookup(symbol)
+    if stock and stock['price'] * shares > current_user.cash:
+        flash(f"You can't buy {shares} share(s) of {symbol}!", "danger")
+        return redirect(url_for("main.index"))
+    else:
+        share = db.session.query(Share).filter(Share.user_id==current_user.id).filter(Share.symbol==stock['symbol']).first()
+        share.num_shares += shares
+        share.total_value += shares * stock['price']      
+
+        buy_transaction = Transaction(
+                            user_id=current_user.id,
+                            share_id=share.id,
+                            symbol=stock['symbol'],
+                            is_buy=True,
+                            price_per_share=stock['price'],
+                            num_shares=shares,
+                            dollar_amount=shares * stock['price'])
+        
+        db.session.add(buy_transaction)
+        
+        current_user.last_buy = datetime.utcnow()
+        current_user.num_buys += 1
+        current_user.cash -= shares * stock['price']
+        current_user.portfolio_value += shares * stock['price']
+
+        db.session.commit()
+        
+        flash(f'Bought {shares} share(s) of {symbol}!', 'success')
+        return redirect(url_for('main.index'))
+
+
+@transactions.route("/sell/instant", methods=["GET", "POST"])
+@login_required
+def instant_sell():
+    """Sell stocks instantly via a modal"""
+    if request.form.get('sell-symbol') == "" or request.form.get('sell-shares') == "":
+        flash(f"Please fill in all the fields.", "info")
+        return redirect(url_for("main.index"))
+
+    symbol = request.form.get('sell-symbol')
+    shares = float(request.form.get('sell-shares'))
+    
+    stock = lookup(symbol)
+    if stock:
+        share = db.session.query(Share).filter(Share.user_id==current_user.id).filter(Share.symbol==stock['symbol']).first()
+        
+        if shares > share.num_shares:
+            flash(f"You can't sell {shares} share(s) of {symbol}!", "danger")
+            return redirect(url_for("main.index"))
+        else:
+            share.num_shares -= shares
+            share.total_value = share.num_shares * stock['price']      
+
+            bought_moment = db.session.query(Transaction).\
+                            filter(Transaction.share_id==share.id).\
+                            filter(Transaction.is_buy==True).first()     
+
+            sell_transaction = Transaction(
+                                user_id=current_user.id,
+                                share_id=share.id,
+                                symbol=stock['symbol'],
+                                is_buy=False,
+                                price_per_share=stock['price'],
+                                num_shares=shares,
+                                dollar_amount=shares * stock['price'])
+            
+            db.session.add(sell_transaction)
+
+            if bought_moment.price_per_share < stock['price']:
+                current_user.num_positive_sales += 1
+            elif bought_moment.price_per_share == stock['price']:
+                current_user.num_equal_sales += 1
+            else:
+                current_user.num_negative_sales += 1
+            
+            current_user.last_sale = datetime.utcnow()
+            current_user.num_sales += 1
+            current_user.cash += shares * stock['price']
+            current_user.portfolio_value -= shares * stock['price']
+
+            db.session.commit()
+            
+            flash(f'Sold {shares} share(s) of {symbol}!', 'success')
+            return redirect(url_for('main.index'))
+    else:
+        flash(f"Something went wrong...", "danger")
+        return redirect(url_for("main.index"))
