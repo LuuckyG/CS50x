@@ -36,10 +36,9 @@ In many weeks you had the choice between a more (harder) and less (easier) comfo
 
 Tracks
 ----------
-In order to decide what kind of final project I wanted to do, I did all tracks, including: Android app, web and game development.
+For tracks, I decided to do the Web track, as this matches best with my current interests in software development.
 
-- [Android](/tracks/android)
-- [Game](/tracks/game)
+
 - [Web](/tracks/web)
    * [Homepage](/tracks/web/homepage)
    * [Finance](/tracks/web/finance)
